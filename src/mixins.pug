@@ -1,0 +1,234 @@
+
+
+mixin title
+	title= htmlWebpackPlugin.options.title
+
+mixin favicon
+	if htmlWebpackPlugin.files.favicon
+		link(rel='shortcut icon', href=htmlWebpackPlugin.files.favicon)
+
+mixin mobile
+	if htmlWebpackPlugin.options.mobile
+		meta(name='viewport', content='width=device-width, initial-scale=1')
+
+mixin appMount(ids)
+	if ids === undefined
+		if htmlWebpackPlugin.options.appMountId
+			div(id=htmlWebpackPlugin.options.appMountId)&attributes(attributes)
+
+		if htmlWebpackPlugin.options.appMountIds && htmlWebpackPlugin.options.appMountIds.length > 0
+			each appMountId in htmlWebpackPlugin.options.appMountIds
+				div(id=appMountId)&attributes(attributes)
+
+	else
+		if !Array.isArray(ids)
+			- ids = [ids];
+		each id in ids
+			div(id=id)&attributes(attributes)
+
+
+- const inlined = new Set(), injected = new Set();
+- let cssToInline = [], jsToInline = [], cssToInject = [], jsToInject = [];
+- let toInline = htmlWebpackPlugin.options.inline && new Set(Array.isArray(htmlWebpackPlugin.options.inline) ? htmlWebpackPlugin.options.inline : [htmlWebpackPlugin.options.inline]);
+- const substrStart = htmlWebpackPlugin.files.publicPath.length;
+- let excludeJSWithCSS = htmlWebpackPlugin.options.excludeJSWithCSS;
+- let excludeJSChunks = htmlWebpackPlugin.options.excludeJSChunks && new Set(htmlWebpackPlugin.options.excludeJSChunks);
+
+//- if inline array was supplied gather which resources to inline and which to inject
+if toInline
+	each chunk, name in htmlWebpackPlugin.files.chunks
+		if excludeJSWithCSS && chunk.css && chunk.css.length > 0
+			- Array.prototype.push.apply(toInline.has(name) ? cssToInline : cssToInject, chunk.css);
+			- continue;
+
+		if excludeJSChunks && excludeJSChunks.has(name)
+			if chunk.css && chunk.css.length > 0
+				- Array.prototype.push.apply(toInline.has(name) ? cssToInline : cssToInject, chunk.css);
+			- continue;
+
+		if toInline.has(name)
+			- jsToInline.push(chunk.entry);
+			if chunk.css && chunk.css.length > 0
+				- Array.prototype.push.apply(cssToInline, chunk.css);
+		else
+			- jsToInject.push(chunk.entry);
+			if chunk.css && chunk.css.length > 0
+				- Array.prototype.push.apply(cssToInject, chunk.css);
+//- otherwise all resources by default except for specifically excluded with excludeJSChunks or excludeJSWithCSS
+else
+	- cssToInject = htmlWebpackPlugin.files.css.slice();
+	each chunk, name in htmlWebpackPlugin.files.chunks
+		if (excludeJSWithCSS && chunk.css && chunk.css.length > 0) || (excludeJSChunks && excludeJSChunks.has(name))
+			- continue;
+		- jsToInject.push(chunk.entry);
+
+
+//-
+	inlines a resource in a tag
+	@filename is a string or a RegExp to be compared against htmlWebpackPlugin.files
+	@tag if not provided is deduced from file extension
+	@searchWithin -- array of filenames to match against RegExp @filename,
+	equals to [...css, ...js] from htmlWebpackPlugin.files by default
+mixin inline(filename, tag)
+	- let files;
+	if filename instanceof RegExp
+		if searchWithin === undefined
+			- searchWithin = htmlWebpackPlugin.files.css.concat(htmlWebpackPlugin.files.js);
+		- files = searchWithin.filter(fn => filename.test(fn));
+	else
+		- files = [filename];
+
+	each file in files
+		- currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
+
+		#{currentTag}&attributes(attributes) !{compilation.assets[file.substr(substrStart)].source()}
+
+		- inlined.add(file);
+
+//-
+	injects a resource in a tag
+	@filename is a string or a RegExp to be compared against htmlWebpackPlugin.files
+	@tag if not provided is deduced from file extension
+	@searchWithin -- array of filenames to match against RegExp @filename,
+	equals to [...css, ...js] from htmlWebpackPlugin.files by default
+mixin inject(filename, tag, searchWithin)
+	- let files;
+	if filename instanceof RegExp
+		if searchWithin === undefined
+			- searchWithin = htmlWebpackPlugin.files.css.concat(htmlWebpackPlugin.files.js);
+		- files = searchWithin.filter(fn => filename.test(fn));
+	else
+		- files = [filename];
+
+	each file in files
+		- currentTag = tag || (file.endsWith(".css") ? "link" : file.endsWith(".js") ? "script" : "div");
+		if currentTag === "link"
+			link(rel="stylesheet", href=file)&attributes(attributes)
+		else if currentTag === "script"
+			script(src=file)&attributes(attibutes)
+		else
+			#{currentTag}&attributes(attributes)
+
+		- injected.add(file);
+
+
+
+
+//-
+	inlines css resources from htmlWebpackPlugin.files,
+	except for already inlined or injected resources
+	@cssList can be a single filename string, RegExp or an array of them,
+	cssList strings starting with "!" are skipped
+mixin inlineCSS(cssList = cssToInline)
+	- let {include, exclude} = constructIncludeExclude(cssList, cssToInline);
+
+	- processRc(include, (css) => {
+			+inline(css, "style", htmlWebpackPlugin.files.css)
+	- }, exclude);
+
+
+//-
+	injects css resources from htmlWebpackPlugin.files,
+	except for already inlined or injected resources
+	@cssList can be a single filename string, RegExp or an array of them,
+	cssList strings starting with "!" are skipped
+mixin injectCSS(cssList = cssToInject)
+	- let {include, exclude} = constructIncludeExclude(cssList, cssToInject);
+
+	- processRc(include, (css) => {
+			+inject(css, "link", htmlWebpackPlugin.files.css)
+	- }, exclude);
+
+
+//-
+	inlines js resources from htmlWebpackPlugin.files,
+	except for already inlined or injected resources
+	@jsList can be a single filename string, RegExp or an array of them,
+	jsList strings starting with "!" are skipped
+mixin inlineJS(jsList = jsToInline)
+	- let {include, exclude} = constructIncludeExclude(jsList, jsToInline);
+
+	- processRc(include, (js) => {
+			+inline(js, "script", htmlWebpackPlugin.files.js)
+	- }, exclude);
+
+
+//-
+	injects js resources from htmlWebpackPlugin.files,
+	except for already inlined or injected resources
+	@jsList can be a single filename string, RegExp or an array of them,
+	jsList strings starting with "!" are skipped
+mixin injectJS(jsList = jsToInject)
+	- let {include, exclude} = constructIncludeExclude(jsList, jsToInline);
+
+	- processRc(include, (js) => {
+			+inject(js, "script", htmlWebpackPlugin.files.js)
+	- }, exclude);
+
+
+//-
+	inlines css resources from chunks passed in htmlWebpackPlugin.options.inline
+	andinjects the rest, in the order they appear htmlWebpackPlugin.files
+mixin CSS
+	each css in htmlWebpackPlugin.files.css
+		if injected.has(css) || inlined.has(css)
+			- continue;
+
+		if cssToInline.includes(css)
+			+inline(css, "style")
+		else if cssToInject.includes(css)
+			+inject(css, "link")
+
+
+//-
+	inlines js resources from chunks passed in htmlWebpackPlugin.options.inline
+	and injects the rest, in the order they appear htmlWebpackPlugin.files
+mixin JS
+	each js in htmlWebpackPlugin.files.js
+		if injected.has(js) || inlined.has(js)
+			- continue;
+
+		if jsToInline.includes(js)
+			+inline(js, "script")
+		else if jsToInject.includes(js)
+			+inject(js, "script")
+
+
+//-
+	processes a single resource or a list of resources,
+	except for already inlined or injected resources,
+	calling cb function on each
+	@rcList can be a single filename string, RegExp or an array of them,
+	rcList elements contained in excludeSet are skipped
+- function processRc(rcList, cb, excludeSet) {
+	if !Array.isArray(rcList)
+		- rcList = [rcList];
+
+	each rc in rcList
+		if !injected.has(rc) && !inlined.has(rc) && !excludeSet.has(rc)
+			- cb(rc);
+- }
+
+
+//-
+	processes a single resource or a list of resources,
+	except for already inlined or injected resources,
+	calling cb function on each
+	@rcList can be a single filename string, RegExp or an array of them,
+	rcList elements contained in ecludeSet are skipped
+- function constructIncludeExclude(set, defaultSet) {
+	- let include, exclude;
+	if typeof set === "string" && set.startsWith("!")
+		- exclude = new Set().add(set.slice(1));
+		- include = defaultSet;
+	else if Array.isArray(set)
+		- let filtered = set.filter(css => typeof css === "string" && css.startsWith("!"));
+		- exclude = new Set(filtered);
+		//- if set contains only excludes("!") consider include = defaultSet, otherwise = actual set
+		- include = filtered.length === set.length ? defaultSet : set;
+	else
+		- include = set;
+		- exclude = new Set();
+
+	- return {include, exclude};
+- }
