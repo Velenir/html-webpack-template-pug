@@ -1,0 +1,23 @@
+{
+	"htmlWebpackPlugin": {
+	  "files": {
+	    "css": [ "style.css" ],
+	    "js": [ "head_bundle.js", "style.js" ],
+	    "chunks": {
+	      "head": {
+	        "entry": "head_bundle.js",
+	        "css": []
+	      },
+				"style": {
+					"entry": "style.js",
+					"css": [ "style.css" ]
+				}
+	    }
+	  },
+		"options": {
+			"title": "Page Title",
+			"inline": "style",
+			"excludeJSWithCSS": true
+		}
+	}
+}

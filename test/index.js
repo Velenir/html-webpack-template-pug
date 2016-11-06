@@ -64,10 +64,9 @@ globalSetup().then(function(setupResults) {
 					var currentLocals = results[0], expectedHTML = results[1];
 
 					// console.log("currentLocals", currentLocals);
-
+					console.log("COMPILING");
 					var compiledTemplate = testCase.pug ? pug.compileFile(testCase.pug) : compiledDefaultTemplate;
-
-					compiledTemplate(currentLocals);
+					console.log("APPLYING");
 
 					var rendered = beautify_html(compiledTemplate(currentLocals), {
 						indent_with_tabs: true,

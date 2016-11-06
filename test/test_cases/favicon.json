@@ -1,0 +1,7 @@
+{
+	"htmlWebpackPlugin": {
+	  "files": {
+			"favicon": "favicon.ico"
+	  }
+	}
+}

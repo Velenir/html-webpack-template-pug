@@ -2,7 +2,7 @@
 	"htmlWebpackPlugin": {
 	  "files": {
 	    "css": [ "main.css" ],
-	    "js": [ "head_bundle.js", "main_bundle.js"],
+	    "js": [ "head_bundle.js", "main_bundle.js" ],
 	    "chunks": {
 	      "head": {
 	        "entry": "head_bundle.js",
@@ -15,7 +15,10 @@
 	    }
 	  },
 		"options": {
-			"title": "Page Title"
+			"title": "Page Title",
+			"mobile": true,
+			"appMountId": "mountId",
+			"appMountIds": ["moundId1", "mountId2"]
 		}
 	}
 }
