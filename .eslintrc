@@ -1,0 +1,29 @@
+{
+  "extends": [
+    "eslint:recommended", "plugin:import/errors", "plugin:import/warnings"
+  ],
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "no-console": 0,
+    "no-underscore-dangle": 1,
+    "react/display-name": 0,
+    "react/prop-types": 0,
+    "indent": [
+        "error",
+        "tab"
+    ],
+    "linebreak-style": [
+        "error",
+        "unix"
+    ],
+    "semi": [
+        "error",
+        "always"
+    ],
+    "import/no-unresolved": [2, {"commonjs": true, "amd": true}]
+  }
+}

@@ -4,7 +4,7 @@
   "description": "A template for html-webpack-plugin made in pug template language",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --delay"
   },
   "keywords": [
     "webpack",
@@ -17,5 +17,12 @@
   "dependencies": {
     "pug": "^2.0.0-beta6",
     "pug-loader": "^2.3.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.9.1",
+    "eslint-plugin-import": "^2.1.0",
+    "js-beautify": "^1.6.4",
+    "mocha": "^3.1.2"
   }
 }

@@ -30,7 +30,7 @@ mixin appMount(ids)
 - const inlined = new Set(), injected = new Set();
 - let cssToInline = [], jsToInline = [], cssToInject = [], jsToInject = [];
 - let toInline = htmlWebpackPlugin.options.inline && new Set(Array.isArray(htmlWebpackPlugin.options.inline) ? htmlWebpackPlugin.options.inline : [htmlWebpackPlugin.options.inline]);
-- const substrStart = htmlWebpackPlugin.files.publicPath.length;
+- const substrStart = htmlWebpackPlugin.files.publicPath ? htmlWebpackPlugin.files.publicPath.length : 0;
 - let excludeJSWithCSS = htmlWebpackPlugin.options.excludeJSWithCSS;
 - let excludeJSChunks = htmlWebpackPlugin.options.excludeJSChunks && new Set(htmlWebpackPlugin.options.excludeJSChunks);
 
