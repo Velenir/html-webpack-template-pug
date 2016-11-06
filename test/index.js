@@ -31,19 +31,26 @@ globalSetup().then(function(setupResults) {
 	var compiledDefaultTemplate = setupResults[0],
 		testCases = setupResults[1],
 		defaultLocals = setupResults[2];
+	// console.log("DEFAULT LOCALS", defaultLocals);
 
 	describe('rendering layout ', function () {
 
 		function prepareInput(jsonFile, htmlFile) {
 			var promisedLocals = jsonFile ? promiseFS(fs.readFile, path.join(testFilesDir, jsonFile)).then(function (fileData) {
 				var newLocals = JSON.parse(fileData);
-				var mergedLocals = Object.assign({}, defaultLocals);
-				mergedLocals.htmlWebpackPlugin = Object.assign({}, defaultLocals.htmlWebpackPlugin, newLocals.htmlWebpackPlugin);
-				mergedLocals.options = Object.assign({}, defaultLocals.options, newLocals.options);
-				console.log("mergedLocals", mergedLocals);
+				var mergedLocals = {htmlWebpackPlugin: {}};
+
+				// extend each prop in htmlWebpackPlugin
+				for (var prop in defaultLocals.htmlWebpackPlugin) {
+					mergedLocals.htmlWebpackPlugin[prop] = Object.assign({}, defaultLocals.htmlWebpackPlugin[prop], newLocals.htmlWebpackPlugin[prop]);
+				}
+				// console.log("\nfor", jsonFile);
+				// console.log("newLocals", newLocals);
+				// console.log("defaultLocals", defaultLocals);
+				// console.log("mergedLocals", mergedLocals);
 
 				return attachCompiledAssets(mergedLocals);
-			}) : attachCompiledAssets(defaultLocals);
+			}) : attachCompiledAssets(Object.assign({}, defaultLocals));
 
 			var promisedHTML = promiseFS(fs.readFile, path.join(testFilesDir, htmlFile));
 
@@ -56,6 +63,8 @@ globalSetup().then(function(setupResults) {
 				return prepareInput(testCase.json, testCase.html).then(function(results) {
 					var currentLocals = results[0], expectedHTML = results[1];
 
+					// console.log("currentLocals", currentLocals);
+
 					var compiledTemplate = testCase.pug ? pug.compileFile(testCase.pug) : compiledDefaultTemplate;
 
 					compiledTemplate(currentLocals);
@@ -65,6 +74,9 @@ globalSetup().then(function(setupResults) {
 						extra_liners: [],
 						indent_inner_html: true
 					});
+
+					// TODO:10 remove
+					fs.writeFileSync('./rendered/'+testCase.html, rendered);
 
 					expect(rendered).to.equal(expectedHTML);
 				});
@@ -77,26 +89,35 @@ globalSetup().then(function(setupResults) {
 });
 
 var attachCompiledAssets = (function () {
-	var cachedAssets = {};
+	var cachedAssets = new Map();
 
 	return function(locals) {
+		// console.log("ATTACHING TO", locals);
 
 		var assets = {};
 
 		var compiledAssetsPromises = locals.htmlWebpackPlugin.files.css
 		.concat(locals.htmlWebpackPlugin.files.js)
-		.map(function(fname) {
-			return cachedAssets[fname] || promiseFS(fs.readFile, path.join(assetsDir, fname)).then(function(data) {
-				cachedAssets[fname] = assets[fname] = {
-					source: function() {
-						return data;
-					}
-				};
-			});
-		});
+		.reduce(function(promises, fname) {
+			if(cachedAssets.has(fname)) {
+				assets[fname] = cachedAssets.get(fname);
+			} else {
+				var promise = promiseFS(fs.readFile, path.join(assetsDir, fname)).then(function(data) {
+					cachedAssets.set(fname, assets[fname] = {
+						source: function() {
+							return data;
+						}
+					});
+				});
+				promises.push(promise);
+			}
+
+			return promises;
+		}, []);
 
 		return Promise.all(compiledAssetsPromises).then(function() {
 			locals.compilation = {assets: assets};
+			// console.log("AFTER ATTACHMENT", locals);
 			return locals;
 		});
 	};
