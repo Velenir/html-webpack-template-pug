@@ -1,4 +1,5 @@
-
+if !htmlWebpackPlugin.options
+	- htmlWebpackPlugin.options = {};
 
 mixin title
 	title= htmlWebpackPlugin.options.title
