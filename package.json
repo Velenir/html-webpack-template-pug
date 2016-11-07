@@ -14,15 +14,18 @@
   ],
   "author": "Velenir",
   "license": "MIT",
-  "dependencies": {
-    "pug": "^2.0.0-beta6",
-    "pug-loader": "^2.3.0"
-  },
   "devDependencies": {
+		"pug": "^2.0.0-beta6",
+    "pug-loader": "^2.3.0",
     "chai": "^3.5.0",
     "eslint": "^3.9.1",
     "eslint-plugin-import": "^2.1.0",
     "js-beautify": "^1.6.4",
     "mocha": "^3.1.2"
+  },
+	"peerDependencies": {
+    "html-webpack-plugin": "2.x",
+    "pug": "2.x",
+    "pug-loader": "2.x"
   }
 }
