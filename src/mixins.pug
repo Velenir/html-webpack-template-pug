@@ -1,23 +1,31 @@
 if !htmlWebpackPlugin.options
 	- htmlWebpackPlugin.options = {};
 
+//- adds title, to be used in <head>
 mixin title
 	title= htmlWebpackPlugin.options.title
 
+//- adds favicon, to be used in <head>
 mixin favicon
 	if htmlWebpackPlugin.files.favicon
 		link(rel='shortcut icon', href=htmlWebpackPlugin.files.favicon)
 
+//- adds mobile meta tag, to be used in <head>
 mixin mobile
 	if htmlWebpackPlugin.options.mobile
 		meta(name='viewport', content='width=device-width, initial-scale=1')
 
+//- adds a div tag for supplied ids
+	@ids can be an Array or a single id,
+	if none supplied uses appMountId and appMountIds
+	also accepts attributes to be added to div tags,
+	appMount("id")(class="mount-point")
 mixin appMount(ids)
 	if ids === undefined
 		if htmlWebpackPlugin.options.appMountId
 			div(id=htmlWebpackPlugin.options.appMountId)&attributes(attributes)
 
-		if htmlWebpackPlugin.options.appMountIds && htmlWebpackPlugin.options.appMountIds.length > 0
+		if htmlWebpackPlugin.options.appMountIds
 			each appMountId in htmlWebpackPlugin.options.appMountIds
 				div(id=appMountId)&attributes(attributes)
 
@@ -212,11 +220,12 @@ mixin JS
 
 
 //-
-	processes a single resource or a list of resources,
-	except for already inlined or injected resources,
-	calling cb function on each
-	@rcList can be a single filename string, RegExp or an array of them,
-	rcList elements contained in ecludeSet are skipped
+	constructs an include string or Array and an exclude Set
+	elements from @set starting with "!" go into exclude Set,
+	if set consists only of !elements, include = @defaultSet
+	@set can be a single filename string with an optional "!" prefix
+	or an Array of such strings
+	@defaultSet is an Array to include by default in case of a fully exclusive @set 
 - function constructIncludeExclude(set, defaultSet) {
 	- let include, exclude;
 	if (typeof set === "string" || set instanceof String) && set.startsWith("!")
