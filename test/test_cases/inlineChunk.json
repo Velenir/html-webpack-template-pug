@@ -1,21 +1,6 @@
 {
 	"htmlWebpackPlugin": {
-	  "files": {
-	    "css": [ "main.css" ],
-	    "js": [ "head_bundle.js", "main_bundle.js" ],
-	    "chunks": {
-	      "head": {
-	        "entry": "head_bundle.js",
-	        "css": []
-	      },
-	      "main": {
-	        "entry": "main_bundle.js",
-	        "css": [ "main.css" ]
-	      }
-	    }
-	  },
 		"options": {
-			"title": "Page Title",
 			"inline": "head"
 		}
 	}

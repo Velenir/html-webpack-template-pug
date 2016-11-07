@@ -15,7 +15,6 @@
 	    }
 	  },
 		"options": {
-			"title": "Page Title",
 			"excludeJSChunks": ["style"]
 		}
 	}
