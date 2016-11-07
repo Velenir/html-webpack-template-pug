@@ -82,11 +82,12 @@ mixin injectExtrasBody
 
 
 - const inlined = new Set(), injected = new Set();
-- let cssToInline = [], jsToInline = [], cssToInject = [], jsToInject = [];
-- let toInline = htmlWebpackPlugin.options.inline && new Set(Array.isArray(htmlWebpackPlugin.options.inline) ? htmlWebpackPlugin.options.inline : [htmlWebpackPlugin.options.inline]);
+- const cssToInline = [], jsToInline = [], jsToInject = [];
+- let cssToInject = [];
+- const toInline = htmlWebpackPlugin.options.inline && new Set(Array.isArray(htmlWebpackPlugin.options.inline) ? htmlWebpackPlugin.options.inline : [htmlWebpackPlugin.options.inline]);
 - const substrStart = htmlWebpackPlugin.files.publicPath ? htmlWebpackPlugin.files.publicPath.length : 0;
-- let excludeJSWithCSS = htmlWebpackPlugin.options.excludeJSWithCSS;
-- let excludeJSChunks = htmlWebpackPlugin.options.excludeJSChunks && new Set(htmlWebpackPlugin.options.excludeJSChunks);
+- const excludeJSWithCSS = htmlWebpackPlugin.options.excludeJSWithCSS;
+- const excludeJSChunks = htmlWebpackPlugin.options.excludeJSChunks && new Set(htmlWebpackPlugin.options.excludeJSChunks);
 
 //- if inline array was supplied gather which resources to inline and which to inject
 if toInline
@@ -174,7 +175,7 @@ mixin inject(filename, tag, searchWithin)
 	@cssList can be a single filename string, RegExp or an array of them,
 	cssList strings starting with "!" are skipped
 mixin inlineCSS(cssList = cssToInline)
-	- let {include, exclude} = constructIncludeExclude(cssList, cssToInline);
+	- const {include, exclude} = constructIncludeExclude(cssList, cssToInline);
 
 	- processRc(include, (css) => {
 			+inline(css, "style", htmlWebpackPlugin.files.css)
@@ -187,7 +188,7 @@ mixin inlineCSS(cssList = cssToInline)
 	@cssList can be a single filename string, RegExp or an array of them,
 	cssList strings starting with "!" are skipped
 mixin injectCSS(cssList = cssToInject)
-	- let {include, exclude} = constructIncludeExclude(cssList, cssToInject);
+	- const {include, exclude} = constructIncludeExclude(cssList, cssToInject);
 
 	- processRc(include, (css) => {
 			+inject(css, "link", htmlWebpackPlugin.files.css)
@@ -200,7 +201,7 @@ mixin injectCSS(cssList = cssToInject)
 	@jsList can be a single filename string, RegExp or an array of them,
 	jsList strings starting with "!" are skipped
 mixin inlineJS(jsList = jsToInline)
-	- let {include, exclude} = constructIncludeExclude(jsList, jsToInline);
+	- const {include, exclude} = constructIncludeExclude(jsList, jsToInline);
 
 	- processRc(include, (js) => {
 			+inline(js, "script", htmlWebpackPlugin.files.js)
@@ -213,7 +214,7 @@ mixin inlineJS(jsList = jsToInline)
 	@jsList can be a single filename string, RegExp or an array of them,
 	jsList strings starting with "!" are skipped
 mixin injectJS(jsList = jsToInject)
-	- let {include, exclude} = constructIncludeExclude(jsList, jsToInline);
+	- const {include, exclude} = constructIncludeExclude(jsList, jsToInline);
 
 	- processRc(include, (js) => {
 			+inject(js, "script", htmlWebpackPlugin.files.js)
