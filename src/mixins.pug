@@ -15,7 +15,7 @@ mixin mobile
 	if htmlWebpackPlugin.options.mobile
 		meta(name='viewport', content='width=device-width, initial-scale=1')
 
-//- adds a div tag for supplied ids
+//- adds a div tag for each supplied id
 	@ids can be an Array or a single id,
 	if none supplied uses appMountId and appMountIds
 	also accepts attributes to be added to div tags,
@@ -34,6 +34,51 @@ mixin appMount(ids)
 			- ids = [ids];
 		each id in ids
 			div(id=id)&attributes(attributes)
+				
+
+- const selfclosingTags =  new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr"]);
+
+//- 
+	injects extra resources
+	@extras is an Array of {tag, ..rest} objects or strings;
+	objects must have valid tag property,
+	strings must end with ".css" or ".js" to be converted into valid objects;
+	content property of an object is included as textContent in non-self-closing tags,
+	other truthy properties of an object are added as attributes to the constructed tag
+mixin injectExtras(extras)
+	each item in extras
+		if typeof item === "string" || item instanceof String
+			if item.endsWith(".css")
+				- item = {tag: "link", href: item, rel: "stylesheet"};
+			else if item.endsWith(".js")
+				- item = {tag: "script", src: item};
+			else
+				- throw new Error("Can't deduce tag from filename: " + item);
+		else if !item.tag
+			- throw new Error("Item " + item + " must have a valid tag property")
+			
+		- const tag = item.tag;
+		- item.tag = null;
+		if selfclosingTags.has(tag)
+			- item.contents = null;
+			#{tag}&attributes(item)/
+		else
+			- const contents = item.contents;
+			- item.contents = null;
+			#{tag}&attributes(item)= contents
+			
+//- 
+	injects extra resources passed in injectExtras.head from htmlWebpackPlugin.options
+mixin injectExtrasHead
+	if htmlWebpackPlugin.options.injectExtras && htmlWebpackPlugin.options.injectExtras.head
+		+injectExtras(htmlWebpackPlugin.options.injectExtras.head)
+
+//- 
+	injects extra resources passed in injectExtras.body from htmlWebpackPlugin.options	
+mixin injectExtrasBody
+	if htmlWebpackPlugin.options.injectExtras && htmlWebpackPlugin.options.injectExtras.body
+		+injectExtras(htmlWebpackPlugin.options.injectExtras.body)
+				
 
 
 - const inlined = new Set(), injected = new Set();
@@ -232,7 +277,7 @@ mixin JS
 		- exclude = new Set().add(set.slice(1));
 		- include = defaultSet;
 	else if Array.isArray(set)
-		- let filtered = set.filter(css => (typeof css === "string" || css instanceof String) && css.startsWith("!"));
+		- const filtered = set.filter(css => (typeof css === "string" || css instanceof String) && css.startsWith("!"));
 		- exclude = new Set(filtered);
 		//- if set contains only excludes("!") consider include = defaultSet, otherwise = actual set
 		- include = filtered.length === set.length ? defaultSet : set;

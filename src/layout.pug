@@ -6,11 +6,12 @@ html(lang='en', manifest=htmlWebpackPlugin.files.manifest)
 		meta(charset='utf-8')
 		meta(http-equiv='X-UA-Compatible', content='IE=edge')
 		
-		+title
-		+favicon
-		+mobile
-
-		+CSS
+		block defaultHead
+			+title
+			+favicon
+			+mobile
+			+injectExtrasHead
+			+CSS
 
 		block head
 
@@ -18,6 +19,9 @@ html(lang='en', manifest=htmlWebpackPlugin.files.manifest)
 
 		block content
 			+appMount
-
-		+JS
+			
+		block defaultBody
+			+injectExtrasBody
+			+JS
+			
 		block scripts
