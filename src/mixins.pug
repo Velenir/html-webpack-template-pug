@@ -118,6 +118,17 @@ else
 		- jsToInject.push(chunk.entry);
 
 
+//- 
+	gathers files matching filename from searchWithin
+	@filename string or regexp to filter for
+	@searchWithin Array of files, equals to htmlWebpackPlugin.files by default
+- function gatherFiles(filename, searchWithin = htmlWebpackPlugin.files.css.concat(htmlWebpackPlugin.files.js)) {	
+	if filename instanceof RegExp
+		- return searchWithin.filter(fn => filename.test(fn));
+	else
+		- return searchWithin.indexOf(filename) !== -1 ? [filename] : [];
+- }
+
 //-
 	inlines a resource in a tag
 	@filename is a string or a RegExp to be compared against htmlWebpackPlugin.files
@@ -125,14 +136,9 @@ else
 	@searchWithin -- array of filenames to match against RegExp @filename,
 	equals to [...css, ...js] from htmlWebpackPlugin.files by default
 mixin inline(filename, tag, searchWithin)
-	- let files;
-	if filename instanceof RegExp
-		if searchWithin === undefined
-			- searchWithin = htmlWebpackPlugin.files.css.concat(htmlWebpackPlugin.files.js);
-		- files = searchWithin.filter(fn => filename.test(fn));
-	else
-		- files = [filename];
-
+	- const files = gatherFiles(filename, searchWithin)
+	if files.length === 0
+		- console.warn("WARNING Nothing to inline for %s query", filename);
 	each file in files
 		- currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
 
@@ -147,14 +153,9 @@ mixin inline(filename, tag, searchWithin)
 	@searchWithin -- array of filenames to match against RegExp @filename,
 	equals to [...css, ...js] from htmlWebpackPlugin.files by default
 mixin inject(filename, tag, searchWithin)
-	- let files;
-	if filename instanceof RegExp
-		if searchWithin === undefined
-			- searchWithin = htmlWebpackPlugin.files.css.concat(htmlWebpackPlugin.files.js);
-		- files = searchWithin.filter(fn => filename.test(fn));
-	else
-		- files = [filename];
-
+	- const files = gatherFiles(filename)
+	if files.length === 0
+		- console.warn("WARNING Nothing to inject for %s query", filename);
 	each file in files
 		- currentTag = tag || (file.endsWith(".css") ? "link" : file.endsWith(".js") ? "script" : "div");
 		if currentTag === "link"
