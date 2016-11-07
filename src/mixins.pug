@@ -123,7 +123,7 @@ else
 	@tag if not provided is deduced from file extension
 	@searchWithin -- array of filenames to match against RegExp @filename,
 	equals to [...css, ...js] from htmlWebpackPlugin.files by default
-mixin inline(filename, tag)
+mixin inline(filename, tag, searchWithin)
 	- let files;
 	if filename instanceof RegExp
 		if searchWithin === undefined
