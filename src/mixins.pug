@@ -219,11 +219,11 @@ mixin JS
 	rcList elements contained in ecludeSet are skipped
 - function constructIncludeExclude(set, defaultSet) {
 	- let include, exclude;
-	if typeof set === "string" && set.startsWith("!")
+	if (typeof set === "string" || set instanceof String) && set.startsWith("!")
 		- exclude = new Set().add(set.slice(1));
 		- include = defaultSet;
 	else if Array.isArray(set)
-		- let filtered = set.filter(css => typeof css === "string" && css.startsWith("!"));
+		- let filtered = set.filter(css => (typeof css === "string" || css instanceof String) && css.startsWith("!"));
 		- exclude = new Set(filtered);
 		//- if set contains only excludes("!") consider include = defaultSet, otherwise = actual set
 		- include = filtered.length === set.length ? defaultSet : set;
