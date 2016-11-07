@@ -13,7 +13,7 @@ mixin favicon
 //- adds mobile meta tag, to be used in <head>
 mixin mobile
 	if htmlWebpackPlugin.options.mobile
-		meta(name='viewport', content='width=device-width, initial-scale=1')
+		meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
 
 //- adds a div tag for each supplied id
 	@ids can be an Array or a single id,
@@ -43,7 +43,7 @@ mixin appMount(ids)
 	@extras is an Array of {tag, ..rest} objects or strings;
 	objects must have valid tag property,
 	strings must end with ".css" or ".js" to be converted into valid objects;
-	content property of an object is included as textContent in non-self-closing tags,
+	innerHTML property of an object is included as innerHTML in non-self-closing tags,
 	other truthy properties of an object are added as attributes to the constructed tag
 mixin injectExtras(extras)
 	each item in extras
@@ -60,12 +60,12 @@ mixin injectExtras(extras)
 		- const tag = item.tag;
 		- item.tag = null;
 		if selfclosingTags.has(tag)
-			- item.contents = null;
+			- item.innerHTML = null;
 			#{tag}&attributes(item)/
 		else
-			- const contents = item.contents;
-			- item.contents = null;
-			#{tag}&attributes(item)= contents
+			- const innerHTML = item.innerHTML;
+			- item.innerHTML = null;
+			#{tag}&attributes(item)!= innerHTML
 			
 //- 
 	injects extra resources passed in injectExtras.head from htmlWebpackPlugin.options
