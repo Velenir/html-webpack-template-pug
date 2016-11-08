@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<base href="../assets/page.html">
+		<title>Page Title</title>
+		<link rel="stylesheet" href="main.css" />
+	</head>
+	<body>
+		<h3>htmlWebpackPlugin:</h3>
+		<pre>{
+  &quot;files&quot;: {
+    &quot;css&quot;: [
+      &quot;main.css&quot;
+    ],
+    &quot;js&quot;: [
+      &quot;head_bundle.js&quot;,
+      &quot;main_bundle.js&quot;
+    ],
+    &quot;chunks&quot;: {
+      &quot;head&quot;: {
+        &quot;entry&quot;: &quot;head_bundle.js&quot;,
+        &quot;css&quot;: []
+      },
+      &quot;main&quot;: {
+        &quot;entry&quot;: &quot;main_bundle.js&quot;,
+        &quot;css&quot;: [
+          &quot;main.css&quot;
+        ]
+      }
+    }
+  },
+  &quot;options&quot;: {
+    &quot;title&quot;: &quot;Page Title&quot;
+  }
+}</pre>
+		<script src="head_bundle.js"></script>
+		<script src="main_bundle.js"></script>
+	</body>
+</html>

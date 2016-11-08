@@ -1,0 +1,24 @@
+include ../../src/mixins.pug
+
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+		base(href="../assets/page.html")
+		
+		+title
+		//- injects all .css files
+		+inject(/\.css$/)
+
+		block head
+
+	body
+
+		h3 htmlWebpackPlugin:
+		pre= JSON.stringify(htmlWebpackPlugin, null, 2)
+			
+		//- injects all .js files
+		+inject(/\.js$/)
+			
+		block scripts
