@@ -1,0 +1,7 @@
+{
+	"htmlWebpackPlugin": {
+		"options": {
+			"inline": "main"
+		}
+	}
+}

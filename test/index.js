@@ -65,7 +65,7 @@ globalSetup().then(function(setupResults) {
 
 					// console.log("currentLocals", currentLocals);
 					console.log("COMPILING");
-					var compiledTemplate = testCase.pug ? pug.compileFile(testCase.pug) : compiledDefaultTemplate;
+					var compiledTemplate = testCase.pug ? pug.compileFile(path.join(testFilesDir, testCase.pug), {pretty: true}) : compiledDefaultTemplate;
 					console.log("APPLYING");
 
 					var rendered = beautify_html(compiledTemplate(currentLocals), {
@@ -124,7 +124,7 @@ var attachCompiledAssets = (function () {
 
 
 function globalSetup() {
-	var compiledDefaultTemplate = pug.compileFile(layoutPug);
+	var compiledDefaultTemplate = pug.compileFile(layoutPug, {pretty: true});
 
 	var promisedTestCases = promiseFS(fs.readdir, testFilesDir).then(function(testFiles) {
 		// console.log("FILES IN ", testFilesDir, testFiles);

@@ -1,0 +1,25 @@
+extends ../../src/layout.pug
+
+block prepend defaultHead
+	//- before defaultHead block
+	base(href="../assets/page.html")
+	
+
+block head
+	link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css")
+	//- injects all *.js passed in inline: [chunks] except for head_bundle.js
+	+inlineJS("!head_bundle.js")
+
+block append content
+	//- in addition to default content block
+	h3 htmlWebpackPlugin:
+	
+	pre= JSON.stringify(htmlWebpackPlugin, null, 2)
+
+block prepend defaultBody
+	//- inlines head_bundle.js before it is injected by default
+	+inlineJS("head_bundle.js")
+	
+block scripts
+	script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js")
+	
