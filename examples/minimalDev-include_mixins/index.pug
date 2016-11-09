@@ -1,0 +1,30 @@
+//- include/extends ~ resolves to nodemodules/
+include ~html-webpack-template-pug/mixins.pug
+
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+		
+		+mobile
+		+title
+		+favicon
+		+injectExtrasHead
+		+CSS
+
+	body
+
+		+appMount
+		
+		h3 htmlWebpackPlugin:
+		
+		pre= JSON.stringify(htmlWebpackPlugin, null, 2)
+		hr
+
+		h3 webpackConfig:
+
+		pre= JSON.stringify(webpackConfig, null, 2)
+			
+		+injectExtrasBody
+		+JS
