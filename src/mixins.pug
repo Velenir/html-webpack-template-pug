@@ -55,17 +55,13 @@ mixin injectExtras(extras)
 			else
 				- throw new Error("Can't deduce tag from filename: " + item);
 		else if !item.tag
-			- throw new Error("Item " + item + " must have a valid tag property")
+			- throw new Error("Item " + JSON.stringify(item) + " must have a valid tag property")
 			
-		- const tag = item.tag;
-		- item.tag = null;
+		- const attrs = Object.assign({}, item, {tag: null, innerHTML: null});
 		if selfclosingTags.has(tag)
-			- item.innerHTML = null;
-			#{tag}&attributes(item)/
+			#{item.tag}&attributes(attrs)/
 		else
-			- const innerHTML = item.innerHTML;
-			- item.innerHTML = null;
-			#{tag}&attributes(item)!= innerHTML
+			#{item.tag}&attributes(attrs)!= item.innerHTML
 			
 //- 
 	injects extra resources passed in injectExtras.head from htmlWebpackPlugin.options
@@ -140,7 +136,7 @@ mixin inline(filename, tag, searchWithin)
 	if files.length === 0
 		- console.warn("WARNING Nothing to inline for %s query", filename);
 	each file in files
-		- currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
+		- const currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
 
 		#{currentTag}&attributes(attributes) !{compilation.assets[file.substr(substrStart)].source()}
 
@@ -157,7 +153,7 @@ mixin inject(filename, tag, searchWithin)
 	if files.length === 0
 		- console.warn("WARNING Nothing to inject for %s query", filename);
 	each file in files
-		- currentTag = tag || (file.endsWith(".css") ? "link" : file.endsWith(".js") ? "script" : "div");
+		- const currentTag = tag || (file.endsWith(".css") ? "link" : file.endsWith(".js") ? "script" : "div");
 		if currentTag === "link"
 			link(rel="stylesheet", href=file)&attributes(attributes)
 		else if currentTag === "script"
