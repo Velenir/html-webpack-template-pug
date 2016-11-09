@@ -7,7 +7,7 @@ var path = require('path');
 var pug = require('pug');
 var beautify_html = require('js-beautify').html;
 
-var layoutPug = path.join(__dirname, '../src/layout.pug');
+var layoutPug = path.join(__dirname, '../layout.pug');
 
 var defaultsJSON = path.join(__dirname, 'defaultLocals.json');
 

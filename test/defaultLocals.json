@@ -1,6 +1,7 @@
 {
 	"htmlWebpackPlugin": {
 	  "files": {
+			"publicPath": "",
 	    "css": [ "main.css" ],
 	    "js": [ "head_bundle.js", "main_bundle.js"],
 	    "chunks": {
