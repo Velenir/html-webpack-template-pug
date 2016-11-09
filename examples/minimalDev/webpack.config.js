@@ -24,7 +24,7 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			inject: false,
-			template: require('../../src'),
+			template: require('../../'),
 			appMountId: 'app',
 			mobile: true,
 			title: 'App',

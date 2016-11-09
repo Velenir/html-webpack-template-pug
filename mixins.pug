@@ -58,7 +58,7 @@ mixin injectExtras(extras)
 			- throw new Error("Item " + JSON.stringify(item) + " must have a valid tag property")
 			
 		- const attrs = Object.assign({}, item, {tag: null, innerHTML: null});
-		if selfclosingTags.has(tag)
+		if selfclosingTags.has(item.tag)
 			#{item.tag}&attributes(attrs)/
 		else
 			#{item.tag}&attributes(attrs)!= item.innerHTML
