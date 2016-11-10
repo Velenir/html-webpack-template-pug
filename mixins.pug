@@ -83,7 +83,7 @@ mixin injectExtrasBody
 - const toInline = htmlWebpackPlugin.options.inline && new Set(Array.isArray(htmlWebpackPlugin.options.inline) ? htmlWebpackPlugin.options.inline : [htmlWebpackPlugin.options.inline]);
 - const substrStart = htmlWebpackPlugin.files.publicPath ? htmlWebpackPlugin.files.publicPath.length : 0;
 - const excludeJSWithCSS = htmlWebpackPlugin.options.excludeJSWithCSS;
-- const excludeJSChunks = htmlWebpackPlugin.options.excludeJSChunks && new Set(htmlWebpackPlugin.options.excludeJSChunks);
+- const excludeJSChunks = htmlWebpackPlugin.options.excludeJSChunks && new Set(Array.isArray(htmlWebpackPlugin.options.excludeJSChunks) ? htmlWebpackPlugin.options.excludeJSChunks : [htmlWebpackPlugin.options.excludeJSChunks]);
 
 //- if inline array was supplied gather which resources to inline and which to inject
 if toInline
