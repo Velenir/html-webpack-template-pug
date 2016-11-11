@@ -1,0 +1,24 @@
+include ../../mixins.pug
+
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+
+		
+		+title
+		//- inlines .css files from chunk
+		+inlineChunk("main", "css")
+
+
+	body
+
+		h3 htmlWebpackPlugin:
+		pre= JSON.stringify(htmlWebpackPlugin, null, 2)
+			
+		//- inlines all files from chunk
+		+inlineChunk("head")
+		
+		//- inlines .js file from chunk
+		+inlineChunk("main", "js")
