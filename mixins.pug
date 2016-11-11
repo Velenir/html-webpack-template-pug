@@ -138,7 +138,7 @@ mixin inline(filename, tag, searchWithin)
 	each file in files
 		- const currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
 
-		#{currentTag}&attributes(attributes) !{compilation.assets[file.substr(substrStart)].source()}
+		#{currentTag}&attributes(attributes)!= compilation.assets[file.substr(substrStart)].source()
 
 		- inlined.add(file);
 
@@ -304,19 +304,19 @@ mixin inlineChunk(chunkNames, type)
 		
 		if type === "css"
 			each file in chunk.css
-				style !{compilation.assets[file.substr(substrStart)].source()}
+				style!= compilation.assets[file.substr(substrStart)].source()
 				- inlined.add(file);
 			else
 				- console.warn("No css files in %s chunk", chunkName);
 		else if type === "js"
-			script !{compilation.assets[chunk.entry.substr(substrStart)].source()}
+			script!= compilation.assets[chunk.entry.substr(substrStart)].source()
 			- inlined.add(chunk.entry);
 		else
 			each file in chunk.css
-				style !{compilation.assets[file.substr(substrStart)].source()}
+				style!= compilation.assets[file.substr(substrStart)].source()
 				- inlined.add(file);
 				
-			script !{compilation.assets[chunk.entry.substr(substrStart)].source()}
+			script!= compilation.assets[chunk.entry.substr(substrStart)].source()
 			- inlined.add(chunk.entry);
 	
 

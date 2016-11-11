@@ -5,13 +5,12 @@ html(lang='en')
 	head
 		meta(charset='utf-8')
 		meta(http-equiv='X-UA-Compatible', content='IE=edge')
-		base(href="../assets/page.html")
+
 		
 		+title
 		//- inlines all .css files
 		+inline(/\.css$/)
 
-		block head
 
 	body
 
@@ -20,5 +19,3 @@ html(lang='en')
 			
 		//- inlines all .js files
 		+inline(/\.js$/)
-			
-		block scripts

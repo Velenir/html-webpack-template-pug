@@ -26,12 +26,9 @@ function promiseFS(fun, arg) {
 
 
 globalSetup().then(function(setupResults) {
-	console.log("SETUP FINISHED");
-
 	var compiledDefaultTemplate = setupResults[0],
 		testCases = setupResults[1],
 		defaultLocals = setupResults[2];
-	// console.log("DEFAULT LOCALS", defaultLocals);
 
 	describe('rendering layout ', function () {
 
@@ -44,10 +41,6 @@ globalSetup().then(function(setupResults) {
 				for (var prop in defaultLocals.htmlWebpackPlugin) {
 					mergedLocals.htmlWebpackPlugin[prop] = Object.assign({}, defaultLocals.htmlWebpackPlugin[prop], newLocals.htmlWebpackPlugin[prop]);
 				}
-				// console.log("\nfor", jsonFile);
-				// console.log("newLocals", newLocals);
-				// console.log("defaultLocals", defaultLocals);
-				// console.log("mergedLocals", mergedLocals);
 
 				return attachCompiledAssets(mergedLocals);
 			}) : attachCompiledAssets(Object.assign({}, defaultLocals));
@@ -59,23 +52,17 @@ globalSetup().then(function(setupResults) {
 
 		testCases.forEach(function(testCase) {
 
-			it((testCase.pug || 'layout.pug') + ', given ' + (testCase.json || 'default.json') +' input, should produce ' + testCase.html, function () {
+			it((testCase.pug || 'layout.pug') + ', given ' + (testCase.json || 'defaultLocals.json') +', should produce ' + testCase.html, function () {
 				return prepareInput(testCase.json, testCase.html).then(function(results) {
 					var currentLocals = results[0], expectedHTML = results[1];
 
-					// console.log("currentLocals", currentLocals);
-					console.log("COMPILING");
 					var compiledTemplate = testCase.pug ? pug.compileFile(path.join(testFilesDir, testCase.pug), {pretty: true}) : compiledDefaultTemplate;
-					console.log("APPLYING");
 
 					var rendered = beautify_html(compiledTemplate(currentLocals), {
 						indent_with_tabs: true,
 						extra_liners: [],
 						indent_inner_html: true
 					});
-
-					// TODO:10 remove
-					fs.writeFileSync('./rendered/'+testCase.html, rendered);
 
 					expect(rendered).to.equal(expectedHTML);
 				});
@@ -91,8 +78,6 @@ var attachCompiledAssets = (function () {
 	var cachedAssets = new Map();
 
 	return function(locals) {
-		// console.log("ATTACHING TO", locals);
-
 		var assets = {}, publicPath = locals.htmlWebpackPlugin.files.publicPath,
 			substrStart = publicPath ? publicPath.length : 0;
 
@@ -118,7 +103,6 @@ var attachCompiledAssets = (function () {
 
 		return Promise.all(compiledAssetsPromises).then(function() {
 			locals.compilation = {assets: assets};
-			// console.log("AFTER ATTACHMENT", locals);
 			return locals;
 		});
 	};
@@ -129,12 +113,8 @@ function globalSetup() {
 	var compiledDefaultTemplate = pug.compileFile(layoutPug, {pretty: true});
 
 	var promisedTestCases = promiseFS(fs.readdir, testFilesDir).then(function(testFiles) {
-		// console.log("FILES IN ", testFilesDir, testFiles);
 		return testFiles.reduce(function(map, cur) {
-
 			var ext = path.extname(cur);
-
-			// console.log("CONSIDERING", cur, ext);
 
 			if(ext === ".json" || ext === ".html" || ext === ".pug") {
 				var name = path.basename(cur, ext);
@@ -146,8 +126,6 @@ function globalSetup() {
 					map.set(name, {[ext]: cur});
 				}
 			}
-
-			// console.log("map", map);
 
 			return map;
 		}, new Map());
