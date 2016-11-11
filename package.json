@@ -4,7 +4,8 @@
   "description": "A template for html-webpack-plugin made in pug template language",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha --delay"
+    "test": "mocha --delay",
+	"lint": "eslint . --ext .js --ext .jsx --ignore-path .gitignore --cache"
   },
   "keywords": [
     "webpack",
