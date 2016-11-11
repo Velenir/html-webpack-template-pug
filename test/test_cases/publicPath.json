@@ -1,0 +1,22 @@
+{
+	"htmlWebpackPlugin": {
+	  "files": {
+			"publicPath": "/assets/",
+	    "css": [ "/assets/main.css" ],
+	    "js": [ "/assets/head_bundle.js", "/assets/main_bundle.js"],
+	    "chunks": {
+	      "head": {
+	        "entry": "/assets/head_bundle.js",
+	        "css": []
+	      },
+	      "main": {
+	        "entry": "/assets/main_bundle.js",
+	        "css": [ "/assets/main.css" ]
+	      }
+	    }
+	  },
+		"options": {
+			"inline": "head"
+		}
+	}
+}

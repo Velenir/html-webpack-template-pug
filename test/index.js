@@ -93,7 +93,8 @@ var attachCompiledAssets = (function () {
 	return function(locals) {
 		// console.log("ATTACHING TO", locals);
 
-		var assets = {};
+		var assets = {}, publicPath = locals.htmlWebpackPlugin.files.publicPath,
+			substrStart = publicPath ? publicPath.length : 0;
 
 		var compiledAssetsPromises = locals.htmlWebpackPlugin.files.css
 		.concat(locals.htmlWebpackPlugin.files.js)
@@ -101,6 +102,7 @@ var attachCompiledAssets = (function () {
 			if(cachedAssets.has(fname)) {
 				assets[fname] = cachedAssets.get(fname);
 			} else {
+				if(substrStart) fname = fname.substr(substrStart);
 				var promise = promiseFS(fs.readFile, path.join(assetsDir, fname)).then(function(data) {
 					cachedAssets.set(fname, assets[fname] = {
 						source: function() {
