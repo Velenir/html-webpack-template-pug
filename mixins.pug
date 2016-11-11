@@ -285,3 +285,71 @@ mixin JS
 
 	- return {include, exclude};
 - }
+
+
+//-
+	inlines files of type @type from chunk with @chunkName name
+	@chunkName - a valid chunk name from htmlWebpackPlugin.files.chunks or an array of names
+	@type - can be "css", "js", which inlines css or js files respectively,
+	otherwise inlines both types
+mixin inlineChunk(chunkNames, type)
+	if !Array.isArray(chunkNames)
+		- chunkNames = [chunkNames];
+		
+	each chunkName in chunkNames
+		- const chunk = htmlWebpackPlugin.files.chunks[chunkName];
+		if !chunk
+			- console.warn("No such chunk", chunkName);
+			- continue;
+		
+		if type === "css"
+			each file in chunk.css
+				style !{compilation.assets[file.substr(substrStart)].source()}
+				- inlined.add(file);
+			else
+				- console.warn("No css files in %s chunk", chunkName);
+		else if type === "js"
+			script !{compilation.assets[chunk.entry.substr(substrStart)].source()}
+			- inlined.add(chunk.entry);
+		else
+			each file in chunk.css
+				style !{compilation.assets[file.substr(substrStart)].source()}
+				- inlined.add(file);
+				
+			script !{compilation.assets[chunk.entry.substr(substrStart)].source()}
+			- inlined.add(chunk.entry);
+	
+
+//-
+	injects files of type @type from chunk with @chunkName name
+	@chunkName - a valid chunk name from htmlWebpackPlugin.files.chunks or an array of names
+	@type - can be "css", "js", which injects css or js files respectively,
+	otherwise injects both types
+mixin injectChunk(chunkNames, type)
+	if !Array.isArray(chunkNames)
+		- chunkNames = [chunkNames];
+		
+	each chunkName in chunkNames
+		- const chunk = htmlWebpackPlugin.files.chunks[chunkName];
+		if !chunk
+			- console.warn("No such chunk", chunkName);
+			- continue;
+		
+		if type === "css"
+			each file in chunk.css
+				link(rel="stylesheet", href=file)
+				- injected.add(file);
+			else
+				- console.warn("No css files in %s chunk", chunkName);
+		else if type === "js"
+			script(src=chunk.entry)
+			- injected.add(chunk.entry);
+		else
+			each file in chunk.css
+				link(rel="stylesheet", href=file)
+				- injected.add(file);
+				
+			script(src=chunk.entry)
+			- injected.add(chunk.entry);
+
+		
