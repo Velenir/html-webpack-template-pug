@@ -80,23 +80,20 @@ mixin injectExtrasBody
 //- if inline array was supplied gather which resources to inline and which to inject
 if toInline
 	each chunk, name in htmlWebpackPlugin.files.chunks
-		if excludeJSWithCSS && chunk.css && chunk.css.length > 0
-			- Array.prototype.push.apply(toInline.has(name) ? cssToInline : cssToInject, chunk.css);
+		if excludeJSWithCSS && chunk.css.length > 0
+			- Array.prototype.push.apply(toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject, chunk.css);
 			- continue;
 
 		if excludeJSChunks && excludeJSChunks.has(name)
-			if chunk.css && chunk.css.length > 0
-				- Array.prototype.push.apply(toInline.has(name) ? cssToInline : cssToInject, chunk.css);
+			- Array.prototype.push.apply(toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject, chunk.css);
 			- continue;
 
 		if toInline.has(name)
 			- jsToInline.push(chunk.entry);
-			if chunk.css && chunk.css.length > 0
-				- Array.prototype.push.apply(cssToInline, chunk.css);
+			- Array.prototype.push.apply(cssToInline, chunk.css);
 		else
-			- jsToInject.push(chunk.entry);
-			if chunk.css && chunk.css.length > 0
-				- Array.prototype.push.apply(cssToInject, chunk.css);
+			- (toInline.has(name + ":js") ? jsToInline : jsToInject).push(chunk.entry);
+			- Array.prototype.push.apply(toInline.has(name + ":css") ? cssToInline : cssToInject, chunk.css);
 //- otherwise all resources by default except for specifically excluded with excludeJSChunks or excludeJSWithCSS
 else
 	- cssToInject = htmlWebpackPlugin.files.css.slice();
