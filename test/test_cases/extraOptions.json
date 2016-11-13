@@ -2,8 +2,7 @@
 	"htmlWebpackPlugin": {
 		"options": {
 			"mobile": true,
-			"appMountId": "mountId",
-			"appMountIds": ["moundId1", "mountId2"]
+			"appMountId": ["moundId1", "mountId2"]
 		}
 	}
 }

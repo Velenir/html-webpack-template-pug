@@ -17,24 +17,16 @@ mixin mobile
 
 //- adds a div tag for each supplied id
 	@ids can be an Array or a single id,
-	if none supplied uses appMountId and appMountIds
+	if none supplied uses appMountId;
 	also accepts attributes to be added to div tags,
-	appMount("id")(class="mount-point")
-mixin appMount(ids)
-	if ids === undefined
-		if htmlWebpackPlugin.options.appMountId
-			div(id=htmlWebpackPlugin.options.appMountId)&attributes(attributes)
-
-		if htmlWebpackPlugin.options.appMountIds
-			each appMountId in htmlWebpackPlugin.options.appMountIds
-				div(id=appMountId)&attributes(attributes)
-
-	else
+	+appMount("id")(class="mount-point")
+mixin appMount(ids = htmlWebpackPlugin.options.appMountId)
+	if ids != undefined
 		if !Array.isArray(ids)
 			- ids = [ids];
 		each id in ids
 			div(id=id)&attributes(attributes)
-				
+
 
 - const selfclosingTags =  new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr"]);
 
@@ -130,7 +122,8 @@ else
 	@filename is a string or a RegExp to be compared against htmlWebpackPlugin.files
 	@tag if not provided is deduced from file extension
 	@searchWithin -- array of filenames to match against RegExp @filename,
-	equals to [...css, ...js] from htmlWebpackPlugin.files by default
+	equals to [...css, ...js] from htmlWebpackPlugin.files by default;
+	also accepts attributes to be added to div tags, +inline(...)(attributes)
 mixin inline(filename, tag, searchWithin)
 	- const files = gatherFiles(filename, searchWithin)
 	if files.length === 0
@@ -147,7 +140,8 @@ mixin inline(filename, tag, searchWithin)
 	@filename is a string or a RegExp to be compared against htmlWebpackPlugin.files
 	@tag if not provided is deduced from file extension
 	@searchWithin -- array of filenames to match against RegExp @filename,
-	equals to [...css, ...js] from htmlWebpackPlugin.files by default
+	equals to [...css, ...js] from htmlWebpackPlugin.files by default;
+	also accepts attributes to be added to div tags, +inject(...)(attributes)
 mixin inject(filename, tag, searchWithin)
 	- const files = gatherFiles(filename)
 	if files.length === 0
