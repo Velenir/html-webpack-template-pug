@@ -56,13 +56,13 @@ mixin injectExtras(extras)
 			#{item.tag}&attributes(attrs)!= item.innerHTML
 			
 //- 
-	injects extra resources passed in injectExtras.head from htmlWebpackPlugin.options
+	injects extra resources passed in injectExtras.head of htmlWebpackPlugin.options
 mixin injectExtrasHead
 	if htmlWebpackPlugin.options.injectExtras && htmlWebpackPlugin.options.injectExtras.head
 		+injectExtras(htmlWebpackPlugin.options.injectExtras.head)
 
 //- 
-	injects extra resources passed in injectExtras.body from htmlWebpackPlugin.options	
+	injects extra resources passed in injectExtras.body of htmlWebpackPlugin.options	
 mixin injectExtrasBody
 	if htmlWebpackPlugin.options.injectExtras && htmlWebpackPlugin.options.injectExtras.body
 		+injectExtras(htmlWebpackPlugin.options.injectExtras.body)
@@ -98,7 +98,7 @@ if toInline
 else
 	- cssToInject = htmlWebpackPlugin.files.css.slice();
 	each chunk, name in htmlWebpackPlugin.files.chunks
-		if (excludeJSWithCSS && chunk.css && chunk.css.length > 0) || (excludeJSChunks && excludeJSChunks.has(name))
+		if (excludeJSWithCSS && chunk.css.length > 0) || (excludeJSChunks && excludeJSChunks.has(name))
 			- continue;
 		- jsToInject.push(chunk.entry);
 
@@ -123,14 +123,14 @@ else
 	also accepts attributes to be added to div tags, +inline(...)(attributes)
 mixin inline(filename, tag, searchWithin)
 	- const files = gatherFiles(filename, searchWithin)
-	if files.length === 0
-		- console.warn("WARNING Nothing to inline for %s query", filename);
 	each file in files
 		- const currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
 
 		#{currentTag}&attributes(attributes)!= compilation.assets[file.substr(substrStart)].source()
 
 		- inlined.add(file);
+	else
+		- console.warn("WARNING Nothing to inline for %s query", filename);
 
 //-
 	injects a resource in a tag
@@ -141,8 +141,6 @@ mixin inline(filename, tag, searchWithin)
 	also accepts attributes to be added to div tags, +inject(...)(attributes)
 mixin inject(filename, tag, searchWithin)
 	- const files = gatherFiles(filename)
-	if files.length === 0
-		- console.warn("WARNING Nothing to inject for %s query", filename);
 	each file in files
 		- const currentTag = tag || (file.endsWith(".css") ? "link" : file.endsWith(".js") ? "script" : "div");
 		if currentTag === "link"
@@ -153,6 +151,8 @@ mixin inject(filename, tag, searchWithin)
 			#{currentTag}&attributes(attributes)
 
 		- injected.add(file);
+	else
+		- console.warn("WARNING Nothing to inject for %s query", filename);
 
 
 
@@ -211,7 +211,7 @@ mixin injectJS(jsList = jsToInject)
 
 //-
 	inlines css resources from chunks passed in htmlWebpackPlugin.options.inline
-	andinjects the rest, in the order they appear htmlWebpackPlugin.files
+	and injects the rest, in the order they appear htmlWebpackPlugin.files
 mixin CSS
 	each css in htmlWebpackPlugin.files.css
 		if injected.has(css) || inlined.has(css)
@@ -281,7 +281,7 @@ mixin JS
 //-
 	inlines files of type @type from chunk with @chunkName name
 	@chunkName - a valid chunk name from htmlWebpackPlugin.files.chunks or an array of names
-	@type - can be "css", "js", which inlines css or js files respectively,
+	@type - can be "css" or "js", which inlines css or js files respectively,
 	otherwise inlines both types
 mixin inlineChunk(chunkNames, type)
 	if !Array.isArray(chunkNames)
@@ -314,7 +314,7 @@ mixin inlineChunk(chunkNames, type)
 //-
 	injects files of type @type from chunk with @chunkName name
 	@chunkName - a valid chunk name from htmlWebpackPlugin.files.chunks or an array of names
-	@type - can be "css", "js", which injects css or js files respectively,
+	@type - can be "css" or "js", which injects css or js files respectively,
 	otherwise injects both types
 mixin injectChunk(chunkNames, type)
 	if !Array.isArray(chunkNames)
