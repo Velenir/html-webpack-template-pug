@@ -282,7 +282,7 @@ Available mixins are:
 - `inline(filename, tag, searchWithin)`
 
 	Inlines a resource in a tag
-	`@filename` is a string or a RegExp to be compared against `htmlWebpackPlugin.files`;  
+	`@filename` is a string or a RegExp to be compared against files passed in **HtmlWebpackPlugin** (`htmlWebpackPlugin.files`);  
 	`@tag` if not provided is deduced from file extension  
 	`@searchWithin` -- array of filenames to match against RegExp `@filename`,  
 	equals to [...css, ...js] from `htmlWebpackPlugin.files` by default;  
@@ -367,7 +367,7 @@ To clarify usage of different parameters in `inlineCSS`, `injectCSS`, `inlineJS`
 
 ```pug
 +inlineCSS
-//- inlines all css resources from htmlWebpackPlugin.files
+//- inlines all css resources passed in HtmlWebpackPlugin (htmlWebpackPlugin.files)
 
 +inlineCSS("style.css")
 //- inlines style.css
