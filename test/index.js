@@ -31,6 +31,8 @@ globalSetup().then(function(setupResults) {
 		defaultLocals = setupResults[2];
 
 	describe('rendering layout ', function () {
+		
+		this.slow(1000);
 
 		function prepareInput(jsonFile, htmlFile) {
 			var promisedLocals = jsonFile ? promiseFS(fs.readFile, path.join(testFilesDir, jsonFile)).then(function (fileData) {
