@@ -1,5 +1,7 @@
+/* eslint-disable import/no-unresolved */
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+/* eslint-enable import/no-unresolved */
 
 module.exports = {
 	entry: {

@@ -1,4 +1,4 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');	//eslint-disable-line import/no-unresolved
 
 module.exports = {
 	entry: {
