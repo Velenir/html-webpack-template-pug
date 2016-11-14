@@ -20,7 +20,10 @@ mixin mobile
 	if none supplied uses appMountId;
 	also accepts attributes to be added to div tags,
 	+appMount("id")(class="mount-point")
-mixin appMount(ids = htmlWebpackPlugin.options.appMountId)
+mixin appMount(ids)
+	if ids === undefined
+		- ids = htmlWebpackPlugin.options.appMountId;
+	
 	if ids != undefined
 		if !Array.isArray(ids)
 			- ids = [ids];
@@ -113,7 +116,9 @@ else
 	gathers files matching filename from searchWithin
 	@filename string or regexp to filter for
 	@searchWithin Array of files, equals to htmlWebpackPlugin.files by default
-- function gatherFiles(filename, searchWithin = htmlWebpackPlugin.files.css.concat(htmlWebpackPlugin.files.js)) {	
+- function gatherFiles(filename, searchWithin) {
+	if searchWithin === undefined
+		- searchWithin = htmlWebpackPlugin.files.css.concat(htmlWebpackPlugin.files.js);
 	if filename instanceof RegExp
 		- return searchWithin.filter(fn => filename.test(fn));
 	else
@@ -168,7 +173,9 @@ mixin inject(filename, tag, searchWithin)
 	except for already inlined or injected resources
 	@cssList can be a single filename string, RegExp or an array of them,
 	cssList strings starting with "!" are skipped
-mixin inlineCSS(cssList = cssToInline)
+mixin inlineCSS(cssList)
+	if cssList === undefined
+		- cssList = cssToInline;
 	- const {include, exclude} = constructIncludeExclude(cssList, cssToInline);
 
 	- processRc(include, (css) => {
@@ -181,7 +188,9 @@ mixin inlineCSS(cssList = cssToInline)
 	except for already inlined or injected resources
 	@cssList can be a single filename string, RegExp or an array of them,
 	cssList strings starting with "!" are skipped
-mixin injectCSS(cssList = cssToInject)
+mixin injectCSS(cssList)
+	if cssList === undefined
+		- cssList = cssToInject;
 	- const {include, exclude} = constructIncludeExclude(cssList, cssToInject);
 
 	- processRc(include, (css) => {
@@ -194,7 +203,9 @@ mixin injectCSS(cssList = cssToInject)
 	except for already inlined or injected resources
 	@jsList can be a single filename string, RegExp or an array of them,
 	jsList strings starting with "!" are skipped
-mixin inlineJS(jsList = jsToInline)
+mixin inlineJS(jsList)
+	if jsList === undefined
+		- jsList = jsToInline;
 	- const {include, exclude} = constructIncludeExclude(jsList, jsToInline);
 
 	- processRc(include, (js) => {
@@ -207,7 +218,9 @@ mixin inlineJS(jsList = jsToInline)
 	except for already inlined or injected resources
 	@jsList can be a single filename string, RegExp or an array of them,
 	jsList strings starting with "!" are skipped
-mixin injectJS(jsList = jsToInject)
+mixin injectJS(jsList)
+	if jsList === undefined
+		- jsList = jsToInject;
 	- const {include, exclude} = constructIncludeExclude(jsList, jsToInline);
 
 	- processRc(include, (js) => {
