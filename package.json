@@ -1,11 +1,13 @@
 {
   "name": "html-webpack-template-pug",
-  "version": "0.9.1",
+  "version": "0.0.0-semantically-released",
   "description": "A template for html-webpack-plugin made in pug template language",
   "main": "index.js",
   "scripts": {
+    "commit": "git-cz",
     "test": "mocha --delay",
-    "lint": "eslint . --ext .js --ext .jsx --ignore-path .gitignore --cache"
+    "lint": "eslint . --ext .js --ext .jsx --ignore-path .gitignore --cache",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
@@ -23,14 +25,22 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "*",
+    "commitizen": "^2.8.6",
+    "cz-conventional-changelog": "^1.2.0",
     "eslint": "^3.9.1",
     "eslint-plugin-import": "^2.1.0",
     "js-beautify": "^1.6.4",
     "mocha": "*",
-    "pug": "^2.0.0-beta6"
+    "pug": "^2.0.0-beta6",
+    "semantic-release": "^4.3.5"
   },
   "peerDependencies": {
     "html-webpack-plugin": "2.x",
     "pug-loader": "2.x"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
