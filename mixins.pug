@@ -70,8 +70,7 @@ mixin injectExtrasBody
 
 
 - const inlined = new Set(), injected = new Set();
-- const cssToInline = [], jsToInline = [], jsToInject = [];
-- let cssToInject = [];
+- const cssToInline = new Set(), cssToInject = new Set(), jsToInline = new Set(), jsToInject = new Set();
 - const toInline = htmlWebpackPlugin.options.inline && new Set(Array.isArray(htmlWebpackPlugin.options.inline) ? htmlWebpackPlugin.options.inline : [htmlWebpackPlugin.options.inline]);
 - const substrStart = htmlWebpackPlugin.files.publicPath ? htmlWebpackPlugin.files.publicPath.length : 0;
 - const excludeJSWithCSS = htmlWebpackPlugin.options.excludeJSWithCSS;
@@ -81,26 +80,33 @@ mixin injectExtrasBody
 if toInline
 	each chunk, name in htmlWebpackPlugin.files.chunks
 		if excludeJSWithCSS && chunk.css.length > 0
-			- Array.prototype.push.apply(toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject, chunk.css);
+			- const rcSet = toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject;
+			each css in chunk.css
+				- rcSet.add(css);
 			- continue;
 
 		if excludeJSChunks && excludeJSChunks.has(name)
-			- Array.prototype.push.apply(toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject, chunk.css);
+			- const rcSet = toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject;
+			each css in chunk.css
+				- rcSet.add(css);
 			- continue;
 
 		if toInline.has(name)
-			- jsToInline.push(chunk.entry);
-			- Array.prototype.push.apply(cssToInline, chunk.css);
+			- jsToInline.add(chunk.entry);
+			each css in chunk.css
+				- cssToInline.add(css);
 		else
-			- (toInline.has(name + ":js") ? jsToInline : jsToInject).push(chunk.entry);
-			- Array.prototype.push.apply(toInline.has(name + ":css") ? cssToInline : cssToInject, chunk.css);
-//- otherwise all resources by default except for specifically excluded with excludeJSChunks or excludeJSWithCSS
+			- (toInline.has(name + ":js") ? jsToInline : jsToInject).add(chunk.entry);
+			- const rcSet = toInline.has(name + ":css") ? cssToInline : cssToInject;
+			each css in chunk.css
+				- rcSet.add(css);
 else
-	- cssToInject = htmlWebpackPlugin.files.css.slice();
+	each css in htmlWebpackPlugin.files.css
+		- cssToInject.add(css);
 	each chunk, name in htmlWebpackPlugin.files.chunks
 		if (excludeJSWithCSS && chunk.css.length > 0) || (excludeJSChunks && excludeJSChunks.has(name))
 			- continue;
-		- jsToInject.push(chunk.entry);
+		- jsToInject.add(chunk.entry);
 
 
 //- 
@@ -217,9 +223,9 @@ mixin CSS
 		if injected.has(css) || inlined.has(css)
 			- continue;
 
-		if cssToInline.includes(css)
+		if cssToInline.has(css)
 			+inline(css, "style")
-		else if cssToInject.includes(css)
+		else if cssToInject.has(css)
 			+inject(css, "link")
 
 
@@ -231,9 +237,9 @@ mixin JS
 		if injected.has(js) || inlined.has(js)
 			- continue;
 
-		if jsToInline.includes(js)
+		if jsToInline.has(js)
 			+inline(js, "script")
-		else if jsToInject.includes(js)
+		else if jsToInject.has(js)
 			+inject(js, "script")
 
 
@@ -246,7 +252,7 @@ mixin JS
 - function processRc(rcList, cb, excludeSet) {
 	if !Array.isArray(rcList)
 		- rcList = [rcList];
-
+		
 	each rc in rcList
 		if !injected.has(rc) && !inlined.has(rc) && !excludeSet.has(rc)
 			- cb(rc);
@@ -259,20 +265,24 @@ mixin JS
 	if set consists only of !elements, include = @defaultSet
 	@set can be a single filename string with an optional "!" prefix
 	or an Array of such strings
-	@defaultSet is an Array to include by default in case of a fully exclusive @set 
+	@defaultSet is a Set to include by default in case of a fully exclusive @set 
 - function constructIncludeExclude(set, defaultSet) {
-	- let include, exclude;
-	if (typeof set === "string" || set instanceof String) && set.startsWith("!")
-		- exclude = new Set().add(set.slice(1));
-		- include = defaultSet;
+	- let include;
+	- const exclude = new Set();
+	if (typeof set === "string" || set instanceof String) && set[0] === "!"
+		- exclude.add(set.slice(1));
+		- include = Array.from(defaultSet);
 	else if Array.isArray(set)
-		- const filtered = set.filter(css => (typeof css === "string" || css instanceof String) && css.startsWith("!"));
-		- exclude = new Set(filtered);
+		- let allExcluded = true;
+		each css in set
+			if (typeof css === "string" || css instanceof String) && css[0] ==="!"
+				- exclude.add(css);
+			else
+				- allExcluded = false;
 		//- if set contains only excludes("!") consider include = defaultSet, otherwise = actual set
-		- include = filtered.length === set.length ? defaultSet : set;
+		- include = allExcluded ? Array.from(defaultSet) : set;
 	else
 		- include = set;
-		- exclude = new Set();
 
 	- return {include, exclude};
 - }
