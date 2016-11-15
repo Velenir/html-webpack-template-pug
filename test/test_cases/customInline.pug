@@ -2,7 +2,7 @@ extends ../../layout.pug
 
 block head
 	link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css")
-	//- injects all *.js passed in inline: [chunks] except for head_bundle.js
+	//- inlines all *.js passed in inline: [chunks] except for head_bundle.js
 	+inlineJS("!head_bundle.js")
 
 block append content
