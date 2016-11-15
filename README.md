@@ -1,4 +1,7 @@
 # HTML Webpack Template Pug
+[![Build Status](https://travis-ci.org/Velenir/html-webpack-template-pug.svg?branch=master)](https://travis-ci.org/Velenir/html-webpack-template-pug)
+[![npm version](https://badge.fury.io/js/html-webpack-template-pug.svg)](https://badge.fury.io/js/html-webpack-template-pug)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/velenir/html-webpack-template-pug/blob/master/LICENSE)
 
 This is a [Pug](https://pugjs.org/) template for the [webpack](http://webpack.github.io/) plugin [html-webpack-plugin](https://www.npmjs.com/package/html-webpack-plugin). Inspired by another template, [html-webpack-template](https://github.com/jaketrent/html-webpack-template).
 
