@@ -31,7 +31,7 @@ mixin appMount(ids)
 			div(id=id)&attributes(attributes)
 
 
-- const selfclosingTags =  new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr"]);
+- var selfclosingTags =  new Set(["area", "base", "br", "col", "embed", "hr", "img", "input", "keygen", "link", "menuitem", "meta", "param", "source", "track", "wbr"]);
 
 //- 
 	injects extra resources
@@ -52,7 +52,7 @@ mixin injectExtras(extras)
 		else if !item.tag
 			- throw new Error("Item " + JSON.stringify(item) + " must have a valid tag property")
 			
-		- const attrs = Object.assign({}, item, {tag: null, innerHTML: null});
+		- var attrs = Object.assign({}, item, {tag: null, innerHTML: null});
 		if selfclosingTags.has(item.tag)
 			#{item.tag}&attributes(attrs)/
 		else
@@ -71,7 +71,6 @@ mixin injectExtrasBody
 		+injectExtras(htmlWebpackPlugin.options.injectExtras.body)
 				
 
-- 'use strict'
 - const inlined = new Set(), injected = new Set();
 - const cssToInline = new Set(), cssToInject = new Set(), jsToInline = new Set(), jsToInject = new Set();
 - const toInline = htmlWebpackPlugin.options.inline && new Set(Array.isArray(htmlWebpackPlugin.options.inline) ? htmlWebpackPlugin.options.inline : [htmlWebpackPlugin.options.inline]);
@@ -83,13 +82,13 @@ mixin injectExtrasBody
 if toInline
 	each chunk, name in htmlWebpackPlugin.files.chunks
 		if excludeJSWithCSS && chunk.css.length > 0
-			- const rcSet = toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject;
+			- var rcSet = toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject;
 			each css in chunk.css
 				- rcSet.add(css);
 			- continue;
 
 		if excludeJSChunks && excludeJSChunks.has(name)
-			- const rcSet = toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject;
+			- var rcSet = toInline.has(name) || toInline.has(name + ":css") ? cssToInline : cssToInject;
 			each css in chunk.css
 				- rcSet.add(css);
 			- continue;
@@ -100,7 +99,7 @@ if toInline
 				- cssToInline.add(css);
 		else
 			- (toInline.has(name + ":js") ? jsToInline : jsToInject).add(chunk.entry);
-			- const rcSet = toInline.has(name + ":css") ? cssToInline : cssToInject;
+			- var rcSet = toInline.has(name + ":css") ? cssToInline : cssToInject;
 			each css in chunk.css
 				- rcSet.add(css);
 else
@@ -133,9 +132,9 @@ else
 	equals to [...css, ...js] from htmlWebpackPlugin.files by default;
 	also accepts attributes to be added to div tags, +inline(...)(attributes)
 mixin inline(filename, tag, searchWithin)
-	- const files = gatherFiles(filename, searchWithin)
+	- var files = gatherFiles(filename, searchWithin)
 	each file in files
-		- const currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
+		- var currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
 
 		#{currentTag}&attributes(attributes)!= compilation.assets[file.substr(substrStart)].source()
 
@@ -151,9 +150,9 @@ mixin inline(filename, tag, searchWithin)
 	equals to [...css, ...js] from htmlWebpackPlugin.files by default;
 	also accepts attributes to be added to div tags, +inject(...)(attributes)
 mixin inject(filename, tag, searchWithin)
-	- const files = gatherFiles(filename)
+	- var files = gatherFiles(filename)
 	each file in files
-		- const currentTag = tag || (file.endsWith(".css") ? "link" : file.endsWith(".js") ? "script" : "div");
+		- var currentTag = tag || (file.endsWith(".css") ? "link" : file.endsWith(".js") ? "script" : "div");
 		if currentTag === "link"
 			link(rel="stylesheet", href=file)&attributes(attributes)
 		else if currentTag === "script"
@@ -176,7 +175,11 @@ mixin inject(filename, tag, searchWithin)
 mixin inlineCSS(cssList)
 	if cssList === undefined
 		- cssList = cssToInline;
-	- const {include, exclude} = constructIncludeExclude(cssList, cssToInline);
+		
+	- var inclExcl = constructIncludeExclude(cssList, cssToInline);
+	
+	- var include = inclExcl.include;
+	- var exclude = inclExcl.exclude;
 
 	- processRc(include, (css) => {
 			+inline(css, "style", htmlWebpackPlugin.files.css)
@@ -191,7 +194,11 @@ mixin inlineCSS(cssList)
 mixin injectCSS(cssList)
 	if cssList === undefined
 		- cssList = cssToInject;
-	- const {include, exclude} = constructIncludeExclude(cssList, cssToInject);
+		
+	- var inclExcl = constructIncludeExclude(cssList, cssToInject);
+	
+	- var include = inclExcl.include;
+	- var exclude = inclExcl.exclude;
 
 	- processRc(include, (css) => {
 			+inject(css, "link", htmlWebpackPlugin.files.css)
@@ -206,7 +213,11 @@ mixin injectCSS(cssList)
 mixin inlineJS(jsList)
 	if jsList === undefined
 		- jsList = jsToInline;
-	- const {include, exclude} = constructIncludeExclude(jsList, jsToInline);
+		
+	- var inclExcl = constructIncludeExclude(jsList, jsToInline);
+	
+	- var include = inclExcl.include;
+	- var exclude = inclExcl.exclude;
 
 	- processRc(include, (js) => {
 			+inline(js, "script", htmlWebpackPlugin.files.js)
@@ -221,7 +232,11 @@ mixin inlineJS(jsList)
 mixin injectJS(jsList)
 	if jsList === undefined
 		- jsList = jsToInject;
-	- const {include, exclude} = constructIncludeExclude(jsList, jsToInline);
+		
+	- var inclExcl = constructIncludeExclude(jsList, jsToInject);
+	
+	- var include = inclExcl.include;
+	- var exclude = inclExcl.exclude;
 
 	- processRc(include, (js) => {
 			+inject(js, "script", htmlWebpackPlugin.files.js)
@@ -311,7 +326,7 @@ mixin inlineChunk(chunkNames, type)
 		- chunkNames = [chunkNames];
 		
 	each chunkName in chunkNames
-		- const chunk = htmlWebpackPlugin.files.chunks[chunkName];
+		- var chunk = htmlWebpackPlugin.files.chunks[chunkName];
 		if !chunk
 			- console.warn("No such chunk", chunkName);
 			- continue;
@@ -344,7 +359,7 @@ mixin injectChunk(chunkNames, type)
 		- chunkNames = [chunkNames];
 		
 	each chunkName in chunkNames
-		- const chunk = htmlWebpackPlugin.files.chunks[chunkName];
+		- var chunk = htmlWebpackPlugin.files.chunks[chunkName];
 		if !chunk
 			- console.warn("No such chunk", chunkName);
 			- continue;

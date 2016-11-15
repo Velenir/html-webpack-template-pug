@@ -14,21 +14,19 @@ var defaultsJSON = path.join(__dirname, 'defaultLocals.json');
 var testFilesDir = path.join(__dirname, 'test_cases');
 var assetsDir = path.join(__dirname, 'assets');
 
-function promiseFS(fun, arg) {
-	console.log("--READ--");
+function promiseFS() {
+	var fun = arguments[0], rest = Array.prototype.slice.call(arguments, 1);
+	
 	return new Promise(function(resolve, reject) {
-		fun.call(fs, arg, 'utf8', function(err, data) {
-			console.log("read err", err);
+		fun.apply(fs, rest.concat(function(err, data) {
 			if(err) return reject(err);
-
 			resolve(data);
-		});
+		}));
 	}).catch(function(err){
 		console.log("after read",err);
 	});
 }
 
-console.log("0");
 
 
 globalSetup().then(function(setupResults) {
@@ -36,16 +34,14 @@ globalSetup().then(function(setupResults) {
 		testCases = setupResults[1],
 		defaultLocals = setupResults[2];
 		
-	console.log("I");
 
 	describe('rendering layout ', function () {
 		
-		console.log("II");
 		
 		this.slow(1000);
 
 		function prepareInput(jsonFile, htmlFile) {
-			var promisedLocals = jsonFile ? promiseFS(fs.readFile, path.join(testFilesDir, jsonFile)).then(function (fileData) {
+			var promisedLocals = jsonFile ? promiseFS(fs.readFile, path.join(testFilesDir, jsonFile), "utf8").then(function (fileData) {
 				var newLocals = JSON.parse(fileData);
 				var mergedLocals = {htmlWebpackPlugin: {}};
 
@@ -57,21 +53,17 @@ globalSetup().then(function(setupResults) {
 				return attachCompiledAssets(mergedLocals);
 			}) : attachCompiledAssets(Object.assign({}, defaultLocals));
 
-			var promisedHTML = promiseFS(fs.readFile, path.join(testFilesDir, htmlFile));
+			var promisedHTML = promiseFS(fs.readFile, path.join(testFilesDir, htmlFile), "utf8");
 
 			return Promise.all([promisedLocals, promisedHTML]);
 		}
 
 		testCases.forEach(function(testCase) {
 			
-			console.log("III");
-
 			it((testCase.pug || 'layout.pug') + ', given ' + (testCase.json || 'defaultLocals.json') +', should produce ' + testCase.html, function () {
 				return prepareInput(testCase.json, testCase.html).then(function(results) {
 					var currentLocals = results[0], expectedHTML = results[1];
 					
-					console.log("IV");
-
 					var compiledTemplate = testCase.pug ? pug.compileFile(path.join(testFilesDir, testCase.pug), {pretty: true}) : compiledDefaultTemplate;
 
 					var rendered = beautify_html(compiledTemplate(currentLocals), {
@@ -104,7 +96,7 @@ var attachCompiledAssets = (function () {
 				assets[fname] = cachedAssets.get(fname);
 			} else {
 				if(substrStart) fname = fname.substr(substrStart);
-				var promise = promiseFS(fs.readFile, path.join(assetsDir, fname)).then(function(data) {
+				var promise = promiseFS(fs.readFile, path.join(assetsDir, fname), "utf8").then(function(data) {
 					cachedAssets.set(fname, assets[fname] = {
 						source: function() {
 							return data;
@@ -126,15 +118,11 @@ var attachCompiledAssets = (function () {
 
 
 function globalSetup() {
-	console.log("--I");
 	var compiledDefaultTemplate = pug.compileFile(layoutPug, {pretty: true});
 	
-	console.log("--II");
 
 	var promisedTestCases = promiseFS(fs.readdir, testFilesDir).then(function(testFiles) {
-		console.log("--III-a");
 		return testFiles.reduce(function(map, cur) {
-			console.log("--III-aa");
 			var ext = path.extname(cur);
 
 			if(ext === ".json" || ext === ".html" || ext === ".pug") {
@@ -154,8 +142,7 @@ function globalSetup() {
 		console.log(err);
 	});
 
-	var promisedDefaultLocals = promiseFS(fs.readFile, defaultsJSON).then(function(data) {
-		console.log("--III-b");
+	var promisedDefaultLocals = promiseFS(fs.readFile, defaultsJSON, "utf8").then(function(data) {
 		return JSON.parse(data);
 	});
 
