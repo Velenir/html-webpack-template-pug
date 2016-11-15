@@ -1,6 +1,6 @@
 {
   "name": "html-webpack-template-pug",
-  "version": "0.0.0-semantically-released",
+  "version": "1.0.0",
   "description": "A template for html-webpack-plugin made in pug template language",
   "main": "index.js",
   "scripts": {
