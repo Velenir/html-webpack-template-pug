@@ -15,22 +15,32 @@ var testFilesDir = path.join(__dirname, 'test_cases');
 var assetsDir = path.join(__dirname, 'assets');
 
 function promiseFS(fun, arg) {
+	console.log("--READ--");
 	return new Promise(function(resolve, reject) {
 		fun.call(fs, arg, 'utf8', function(err, data) {
+			console.log("read err", err);
 			if(err) return reject(err);
 
 			resolve(data);
 		});
+	}).catch(function(err){
+		console.log("after read",err);
 	});
 }
+
+console.log("0");
 
 
 globalSetup().then(function(setupResults) {
 	var compiledDefaultTemplate = setupResults[0],
 		testCases = setupResults[1],
 		defaultLocals = setupResults[2];
+		
+	console.log("I");
 
 	describe('rendering layout ', function () {
+		
+		console.log("II");
 		
 		this.slow(1000);
 
@@ -53,10 +63,14 @@ globalSetup().then(function(setupResults) {
 		}
 
 		testCases.forEach(function(testCase) {
+			
+			console.log("III");
 
 			it((testCase.pug || 'layout.pug') + ', given ' + (testCase.json || 'defaultLocals.json') +', should produce ' + testCase.html, function () {
 				return prepareInput(testCase.json, testCase.html).then(function(results) {
 					var currentLocals = results[0], expectedHTML = results[1];
+					
+					console.log("IV");
 
 					var compiledTemplate = testCase.pug ? pug.compileFile(path.join(testFilesDir, testCase.pug), {pretty: true}) : compiledDefaultTemplate;
 
@@ -112,10 +126,15 @@ var attachCompiledAssets = (function () {
 
 
 function globalSetup() {
+	console.log("--I");
 	var compiledDefaultTemplate = pug.compileFile(layoutPug, {pretty: true});
+	
+	console.log("--II");
 
 	var promisedTestCases = promiseFS(fs.readdir, testFilesDir).then(function(testFiles) {
+		console.log("--III-a");
 		return testFiles.reduce(function(map, cur) {
+			console.log("--III-aa");
 			var ext = path.extname(cur);
 
 			if(ext === ".json" || ext === ".html" || ext === ".pug") {
@@ -131,9 +150,12 @@ function globalSetup() {
 
 			return map;
 		}, new Map());
+	}).catch(function(err){
+		console.log(err);
 	});
 
 	var promisedDefaultLocals = promiseFS(fs.readFile, defaultsJSON).then(function(data) {
+		console.log("--III-b");
 		return JSON.parse(data);
 	});
 

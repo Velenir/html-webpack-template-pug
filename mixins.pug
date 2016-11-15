@@ -71,7 +71,7 @@ mixin injectExtrasBody
 		+injectExtras(htmlWebpackPlugin.options.injectExtras.body)
 				
 
-
+- 'use strict'
 - const inlined = new Set(), injected = new Set();
 - const cssToInline = new Set(), cssToInject = new Set(), jsToInline = new Set(), jsToInject = new Set();
 - const toInline = htmlWebpackPlugin.options.inline && new Set(Array.isArray(htmlWebpackPlugin.options.inline) ? htmlWebpackPlugin.options.inline : [htmlWebpackPlugin.options.inline]);
@@ -280,13 +280,13 @@ mixin JS
 	or an Array of such strings
 	@defaultSet is a Set to include by default in case of a fully exclusive @set 
 - function constructIncludeExclude(set, defaultSet) {
-	- let include;
+	- var include;
 	- const exclude = new Set();
 	if (typeof set === "string" || set instanceof String) && set[0] === "!"
 		- exclude.add(set.slice(1));
 		- include = Array.from(defaultSet);
 	else if Array.isArray(set)
-		- let allExcluded = true;
+		- var allExcluded = true;
 		each css in set
 			if (typeof css === "string" || css instanceof String) && css[0] ==="!"
 				- exclude.add(css);
