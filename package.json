@@ -21,6 +21,10 @@
     "html-webpack-template-pug",
     "pug"
   ],
+  "files": [
+    "layout.pug",
+    "mixins.pug"
+  ],
   "author": "Velenir",
   "license": "MIT",
   "devDependencies": {
