@@ -27,6 +27,9 @@
   ],
   "author": "Velenir",
   "license": "MIT",
+  "engines": {
+    "node": ">=4"
+  },
   "devDependencies": {
     "chai": "*",
     "commitizen": "^2.8.6",
