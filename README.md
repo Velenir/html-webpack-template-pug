@@ -20,7 +20,7 @@ npm install html-webpack-template-pug --save-dev
 or together with peer dependencies:
 
 ```shell
-npm install pug pug-loader html-webpack-template-pug --save-dev
+npm install pug pug-loader html-webpack-plugin html-webpack-template-pug --save-dev
 ```
 
 ## Basic Usage
@@ -50,15 +50,15 @@ template: '!!pug!custom_template.pug'
 ```
 
 Optional parameters:
-- `appMountId: String or [String,...]` -- Id or an array of ids for the `<div>` elements to be included in the `<body`, for mounting JavaScript app, etc.
+- `appMountId: String or [String,...]` -- Id or an array of ids for the `<div>` elements to be included in the `<body>`, for mounting JavaScript app, etc.
 - `mobile: Boolean = false` -- Adds a meta tag for viewport size and page scaling on mobile.
 - `inline: String or [String,...]` -- A chunk name or an array of chunk names to be inlined. A chunk name corresponds to the name of the entry point and can include `:css` or `:js` prefix to limit resources to be inlined to CSS or JavaScript respectively.
-- `excludeJSWithCSS: Boolean = false` -- Excludes JavaScript files from chunks that include CSS files. Intended for use cases when a JavaScript file (e.g `style.js`) is created as a byproduct of a CSS-only entry chunk (`entry: {style: 'main.css'}`).
-- `excludeJSWithCSS: String or [String,...]` -- A chunk name or an array of chunk names to be excluded. Excludes JavaScript files from specific chunks. Intended for use cases when a JavaScript file (e.g `style.js`) is created as a byproduct of a CSS-only entry chunk (`entry: {style: 'main.css'}`).
+- `excludeJSWithCSS: Boolean = false` -- Excludes JavaScript files from chunks that contain CSS files. Intended for use cases when a JavaScript file (e.g `style.js`) is created as a byproduct of a CSS-only entry chunk (`entry: {style: 'main.css'}`).
+- `excludeJSChunks: String or [String,...]` -- A chunk name or an array of chunk names. Excludes JavaScript files from specific chunks. Intended for use cases when a JavaScript file (e.g `style.js`) is created as a byproduct of a CSS-only entry chunk (`entry: {style: 'main.css'}`).
 - `injectExtras.head: [tag,...]` -- An array of Objects representing **tags** to be injected in `<head>`. A tag can be:
   + A String ending with **".css"**. Then the injected **tag** becomes `<link rel="stylesheet" href=tag>`.
   + A String ending with **".css"**. Then the injected **tag** becomes `<script src=tag></script>`.
-  + An object with one required property **tag** that will serve as the tag name. All other properties will be set on the injected **tag** as its attributes. **innerHTML** properry, if set, will be passed as content to non-self-closing **tags**.
+  + An object with one required property **tag** that will serve as the tag name. All other properties will be set on the injected **tag** as its attributes. **innerHTML** property, if set, will be passed as content to non-self-closing **tags**.
   + To give an example:  
     ```javascript
     {
@@ -159,6 +159,7 @@ An example of webpack configuration with extracting a CSS-only entry chunk:
       
       // Optional
       excludeJSChunks: 'style',	// don't include specific chunks in scripts (when .js is a byproduct of an already extracted .css)
+			// excludeJSChunks: ['style1', 'style2']
       appMountId: 'app',
       mobile: true,
       title: 'My App'
@@ -213,7 +214,7 @@ extends ~html-webpack-template-pug/layout.pug
 block head
 	link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css")
 
-block append content
+block content
 	header
 		h2 Header
 	
@@ -364,31 +365,31 @@ and injects the rest, in the order they appear `htmlWebpackPlugin.files`.
 +inlineCSS
 ```
 
-However, `+inline` and `inject` mixins allow duplicates.
+However, `inline` and `inject` mixins allow duplicates.
 
 To clarify usage of different parameters in `inlineCSS`, `injectCSS`, `inlineJS` and `injectJS`:
 
 ```pug
 +inlineCSS
-//- inlines all css resources passed in HtmlWebpackPlugin (htmlWebpackPlugin.files)
+//- inlines all css resources passed in HtmlWebpackPlugin (htmlWebpackPlugin.files.css)
 
 +inlineCSS("style.css")
 //- inlines style.css
 
 +inlineCSS(/\.css$/)
-//- inlines all /\.css$/ matches in htmlWebpackPlugin.files
+//- inlines all /\.css$/ matches in htmlWebpackPlugin.files.css
 
 +inlineCSS("!style.css")
-//- inlines all css resources from htmlWebpackPlugin.files except for **"style.css"**
+//- inlines all resources from htmlWebpackPlugin.files.css except for style.css
 
 +inlineCSS(["style1.css", "style2.css"])
-//- inlines **style1.css** and **style2.css**
+//- inlines style1.css and style2.css
 
 +inlineCSS(["style1.css", "!style2.css"])
-//- inlines **style1.css** but not **style2.css**
+//- inlines style1.css but not style2.css
 
 +inlineCSS(["!style1.css", "!style2.css"])
-//- inlines all css resources from htmlWebpackPlugin.files except for **style1.css** and **style2.css**
+//- inlines all resources from htmlWebpackPlugin.files.css except for style1.css and style2.css
 ```
 
 A custom template can then look like this:
