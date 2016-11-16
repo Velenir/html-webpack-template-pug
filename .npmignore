@@ -1,0 +1,20 @@
+# common
+coverage
+node_modules
+*.log
+.nyc_output
+.test
+test
+examples
+.tmp
+
+# source/config
+src
+*.yml
+.gitignore
+.editorconfig
+.npmrc
+.eslint*
+
+# extra
+.imdone
