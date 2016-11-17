@@ -39,7 +39,7 @@
     "js-beautify": "^1.6.4",
     "mocha": "*",
     "pug": "^2.0.0-beta6",
-    "semantic-release": "^4.3.5"
+    "semantic-release": "^6.3.2"
   },
   "peerDependencies": {
     "html-webpack-plugin": "2.x",
