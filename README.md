@@ -55,14 +55,15 @@ template: '!!pug!custom_template.pug'
 Optional parameters:
 - `appMountId: String or [String,...]` -- Id or an array of ids for the `<div>` elements to be included in the `<body>`, for mounting JavaScript app, etc.
 - `mobile: Boolean = false` -- Adds a meta tag for viewport size and page scaling on mobile.
-- `inline: String or [String,...]` -- A chunk name or an array of chunk names to be inlined. A chunk name corresponds to the name of the entry point and can include `:css` or `:js` prefix to limit resources to be inlined to CSS or JavaScript respectively.
+- `inline: String or [String,...]` -- A chunk name or an array of chunk names to be inlined. A chunk name corresponds to the name of the entry point and can include `:css` or `:js` postfix to limit resources to be inlined to CSS or JavaScript respectively.
 - `excludeJSWithCSS: Boolean = false` -- Excludes JavaScript files from chunks that contain CSS files. Intended for use cases when a JavaScript file (e.g `style.js`) is created as a byproduct of a CSS-only entry chunk (`entry: {style: 'main.css'}`).
 - `excludeJSChunks: String or [String,...]` -- A chunk name or an array of chunk names. Excludes JavaScript files from specific chunks. Intended for use cases when a JavaScript file (e.g `style.js`) is created as a byproduct of a CSS-only entry chunk (`entry: {style: 'main.css'}`).
 - `injectExtras.head: [tag,...]` -- An array of Objects representing **tags** to be injected in `<head>`. A tag can be:
   + A String ending with **".css"**. Then the injected **tag** becomes `<link rel="stylesheet" href=tag>`.
   + A String ending with **".css"**. Then the injected **tag** becomes `<script src=tag></script>`.
   + An object with one required property **tag** that will serve as the tag name. All other properties will be set on the injected **tag** as its attributes. **innerHTML** property, if set, will be passed as content to non-self-closing **tags**.
-  + To give an example:  
+  + To give an example:
+	
     ```javascript
     {
       tag: "meta",
@@ -70,10 +71,13 @@ Optional parameters:
       content: "A description of the page"
     }
     ```
+		
     becomes    
+		
     ```html
     <meta name="description" content="A description of the page">
     ```
+		
 - `injectExtras.body: [tag,...]` -- Same as `injectExtras.head` but to be injected at the bottom of the `<body>`.
 
 
