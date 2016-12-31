@@ -1,1 +1,1 @@
-module.exports = "!!pug!" + require('path').join(__dirname, 'layout.pug');
+module.exports = "!!pug-loader!" + require('path').join(__dirname, 'layout.pug');

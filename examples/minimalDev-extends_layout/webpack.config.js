@@ -31,7 +31,7 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			inject: false,
-			template: '!!pug!./index.pug',
+			template: '!!pug-loader!./index.pug',
 			appMountId: 'app',
 			mobile: true,
 			title: 'App',

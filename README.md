@@ -41,7 +41,7 @@ module: {
     //...
     {
       test: /\.pug$/,
-      loader: 'pug'
+      loader: 'pug-loader'
     }
   ]
 }
@@ -49,7 +49,7 @@ module: {
 or explicitly together with the template:
 
 ```javascript
-template: '!!pug!custom_template.pug'
+template: '!!pug-loader!custom_template.pug'
 ```
 
 Optional parameters:
@@ -95,7 +95,7 @@ An example of webpack configuration utilizing the options above:
       // Required
       inject: false,
       template: require('html-webpack-template-pug'),
-      // template: '!!pug!node_modules/html-webpack-template-pug/layout.pug'
+      // template: '!!pug-loader!node_modules/html-webpack-template-pug/layout.pug'
       
       // Optional
       appMountId: 'app',
@@ -162,7 +162,7 @@ An example of webpack configuration with extracting a CSS-only entry chunk:
       // Required
       inject: false,
       template: require('html-webpack-template-pug'),
-      // template: '!!pug!node_modules/html-webpack-template-pug/layout.pug'
+      // template: '!!pug-loader!node_modules/html-webpack-template-pug/layout.pug'
       
       // Optional
       excludeJSChunks: 'style',	// don't include specific chunks in scripts (when .js is a byproduct of an already extracted .css)
@@ -247,7 +247,7 @@ An example of webpack configuration with a custom template extending the default
     new HtmlWebpackPlugin({
       // Required
       inject: false,
-      template: '!!pug!index.pug',      
+      template: '!!pug-loader!index.pug',      
       // Optional
       appMountId: 'app',
       mobile: true,
@@ -438,7 +438,7 @@ An example of webpack configuration with a custom template including the default
     new HtmlWebpackPlugin({
       // Required
       inject: false,
-      template: '!!pug!index.pug',      
+      template: '!!pug-loader!index.pug',      
       // Optional
       appMountId: 'app',
       mobile: true,
