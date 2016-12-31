@@ -28,7 +28,7 @@ npm install pug pug-loader html-webpack-plugin html-webpack-template-pug --save-
 
 ## Basic Usage
 
-Required parameters, to be passed to `new HtmlWebpackPlugin({})`:
+Required parameters, to be passed to `new HtmlWebpackPlugin(options)` as properties on `options`:
 
 - `inject: false` -- Disables resource injection by **html-webpack-plugin**
 - `template`: provided `layout.pug` or a custom `*.pug` file.
@@ -392,8 +392,8 @@ To clarify usage of different parameters in `inlineCSS`, `injectCSS`, `inlineJS`
 +inlineCSS(["style1.css", "style2.css"])
 //- inlines style1.css and style2.css
 
-+inlineCSS(["style1.css", "!style2.css"])
-//- inlines style1.css but not style2.css
++inlineCSS([/\.css$/, "!style2.css"])
+//- inlines all /\.css$/ matches except for style2.css
 
 +inlineCSS(["!style1.css", "!style2.css"])
 //- inlines all resources from htmlWebpackPlugin.files.css except for style1.css and style2.css
