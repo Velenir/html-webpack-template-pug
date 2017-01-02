@@ -124,7 +124,7 @@ An example of webpack configuration utilizing the options above:
           'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js',
           {
             tag: 'noscript',
-            innerHTML: 'JavaScript is disabled in your browser. <a href='http://www.enable-javascript.com/' target='_blank'>Here</a> is how to enable it.'
+            innerHTML: "JavaScript is disabled in your browser. <a href='http://www.enable-javascript.com/' target='_blank'>Here</a> is how to enable it."
           }
         ]
       },
