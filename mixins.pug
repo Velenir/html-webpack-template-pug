@@ -163,7 +163,7 @@ mixin inject(filename, tag, searchWithin)
 		if currentTag === "link"
 			link(rel="stylesheet", href=file)&attributes(attributes)
 		else if currentTag === "script"
-			script(src=file)&attributes(attibutes)
+			script(src=file)&attributes(attributes)
 		else
 			#{currentTag}&attributes(attributes)
 
@@ -178,7 +178,8 @@ mixin inject(filename, tag, searchWithin)
 	inlines css resources from htmlWebpackPlugin.files,
 	except for already inlined or injected resources
 	@cssList can be a single filename string, RegExp or an array of them,
-	cssList strings starting with "!" are skipped
+	cssList strings starting with "!" are skipped;
+	also accepts attributes to be added to style tags, +inlineCSS(...)(attributes)
 mixin inlineCSS(cssList)
 	if cssList === undefined
 		- cssList = Array.from(cssToInline);
@@ -189,7 +190,7 @@ mixin inlineCSS(cssList)
 	- var exclude = inclExcl.exclude;
 
 	- processRc(include, (css) => {
-			+inline(css, "style", htmlWebpackPlugin.files.css)
+			+inline(css, "style", htmlWebpackPlugin.files.css)&attributes(attributes)
 	- }, exclude);
 
 
@@ -197,7 +198,8 @@ mixin inlineCSS(cssList)
 	injects css resources from htmlWebpackPlugin.files,
 	except for already inlined or injected resources
 	@cssList can be a single filename string, RegExp or an array of them,
-	cssList strings starting with "!" are skipped
+	cssList strings starting with "!" are skipped;
+	also accepts attributes to be added to link tags, +injectCSS(...)(attributes)
 mixin injectCSS(cssList)
 	if cssList === undefined
 		- cssList = Array.from(cssToInject);
@@ -208,7 +210,7 @@ mixin injectCSS(cssList)
 	- var exclude = inclExcl.exclude;
 
 	- processRc(include, (css) => {
-			+inject(css, "link", htmlWebpackPlugin.files.css)
+			+inject(css, "link", htmlWebpackPlugin.files.css)&attributes(attributes)
 	- }, exclude);
 
 
@@ -216,7 +218,8 @@ mixin injectCSS(cssList)
 	inlines js resources from htmlWebpackPlugin.files,
 	except for already inlined or injected resources
 	@jsList can be a single filename string, RegExp or an array of them,
-	jsList strings starting with "!" are skipped
+	jsList strings starting with "!" are skipped;
+	also accepts attributes to be added to script tags, +inlineJS(...)(attributes)
 mixin inlineJS(jsList)
 	if jsList === undefined
 		- jsList = Array.from(jsToInline);
@@ -227,7 +230,7 @@ mixin inlineJS(jsList)
 	- var exclude = inclExcl.exclude;
 
 	- processRc(include, (js) => {
-			+inline(js, "script", htmlWebpackPlugin.files.js)
+			+inline(js, "script", htmlWebpackPlugin.files.js)&attributes(attributes)
 	- }, exclude);
 
 
@@ -235,7 +238,8 @@ mixin inlineJS(jsList)
 	injects js resources from htmlWebpackPlugin.files,
 	except for already inlined or injected resources
 	@jsList can be a single filename string, RegExp or an array of them,
-	jsList strings starting with "!" are skipped
+	jsList strings starting with "!" are skipped;
+	also accepts attributes to be added to script tags, +injectJS(...)(attributes)
 mixin injectJS(jsList)
 	if jsList === undefined
 		- jsList = Array.from(jsToInject);
@@ -246,36 +250,38 @@ mixin injectJS(jsList)
 	- var exclude = inclExcl.exclude;
 
 	- processRc(include, (js) => {
-			+inject(js, "script", htmlWebpackPlugin.files.js)
+			+inject(js, "script", htmlWebpackPlugin.files.js)&attributes(attributes)
 	- }, exclude);
 
 
 //-
 	inlines css resources from chunks passed in htmlWebpackPlugin.options.inline
-	and injects the rest, in the order they appear htmlWebpackPlugin.files
+	and injects the rest, in the order they appear htmlWebpackPlugin.files;
+	also accepts attributes to be added to link/style tags, +CSS(...)(attributes)
 mixin CSS
 	each css in htmlWebpackPlugin.files.css
 		if injected.has(css) || inlined.has(css)
 			- continue;
 
 		if cssToInline.has(css)
-			+inline(css, "style")
+			+inline(css, "style")&attributes(attributes)
 		else if cssToInject.has(css)
-			+inject(css, "link")
+			+inject(css, "link")&attributes(attributes)
 
 
 //-
 	inlines js resources from chunks passed in htmlWebpackPlugin.options.inline
-	and injects the rest, in the order they appear htmlWebpackPlugin.files
+	and injects the rest, in the order they appear htmlWebpackPlugin.files;
+	also accepts attributes to be added to script tags, +JS(...)(attributes)
 mixin JS
 	each js in htmlWebpackPlugin.files.js
 		if injected.has(js) || inlined.has(js)
 			- continue;
 
 		if jsToInline.has(js)
-			+inline(js, "script")
+			+inline(js, "script")&attributes(attributes)
 		else if jsToInject.has(js)
-			+inject(js, "script")
+			+inject(js, "script")&attributes(attributes)
 
 
 //-
@@ -327,7 +333,8 @@ mixin JS
 	inlines files of type @type from chunk with @chunkName name
 	@chunkName - a valid chunk name from htmlWebpackPlugin.files.chunks or an array of names
 	@type - can be "css" or "js", which inlines css or js files respectively,
-	otherwise inlines both types
+	otherwise inlines both types;
+	also accepts attributes to be added to style/script tags, +inlineChunk(...)(attributes)
 mixin inlineChunk(chunkNames, type)
 	if !Array.isArray(chunkNames)
 		- chunkNames = [chunkNames];
@@ -368,7 +375,8 @@ mixin inlineChunk(chunkNames, type)
 	injects files of type @type from chunk with @chunkName name
 	@chunkName - a valid chunk name from htmlWebpackPlugin.files.chunks or an array of names
 	@type - can be "css" or "js", which injects css or js files respectively,
-	otherwise injects both types
+	otherwise injects both types;
+	also accepts attributes to be added to link/script tags, +injectChunk(...)(attributes)
 mixin injectChunk(chunkNames, type)
 	if !Array.isArray(chunkNames)
 		- chunkNames = [chunkNames];
