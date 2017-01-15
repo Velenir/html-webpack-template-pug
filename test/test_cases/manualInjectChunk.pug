@@ -17,8 +17,6 @@ html(lang='en')
 		h3 htmlWebpackPlugin:
 		pre= JSON.stringify(htmlWebpackPlugin, null, 2)
 			
-		//- injects all files from chunk
-		+injectChunk("head")
-		
-		//- injects .js file from chunk
-		+injectChunk("main", "js")
+		//- injects all files from chunk "head" and		
+		//- injects the rest (.js file) from chunk "main"
+		+injectChunk(["head", "main"])
