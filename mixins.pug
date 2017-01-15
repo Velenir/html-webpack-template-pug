@@ -174,7 +174,7 @@ mixin inject(filename, tag, searchWithin)
 	cssList strings starting with "!" are skipped
 mixin inlineCSS(cssList)
 	if cssList === undefined
-		- cssList = cssToInline;
+		- cssList = Array.from(cssToInline);
 		
 	- var inclExcl = constructIncludeExclude(cssList, cssToInline);
 	
@@ -193,7 +193,7 @@ mixin inlineCSS(cssList)
 	cssList strings starting with "!" are skipped
 mixin injectCSS(cssList)
 	if cssList === undefined
-		- cssList = cssToInject;
+		- cssList = Array.from(cssToInject);
 		
 	- var inclExcl = constructIncludeExclude(cssList, cssToInject);
 	
@@ -212,7 +212,7 @@ mixin injectCSS(cssList)
 	jsList strings starting with "!" are skipped
 mixin inlineJS(jsList)
 	if jsList === undefined
-		- jsList = jsToInline;
+		- jsList = Array.from(jsToInline);
 		
 	- var inclExcl = constructIncludeExclude(jsList, jsToInline);
 	
@@ -231,7 +231,7 @@ mixin inlineJS(jsList)
 	jsList strings starting with "!" are skipped
 mixin injectJS(jsList)
 	if jsList === undefined
-		- jsList = jsToInject;
+		- jsList = Array.from(jsToInject);
 		
 	- var inclExcl = constructIncludeExclude(jsList, jsToInject);
 	
