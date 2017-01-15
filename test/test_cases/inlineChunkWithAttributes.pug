@@ -1,0 +1,13 @@
+extends ../../layout.pug
+
+
+block defaultHead
+	+mobile
+	+title
+	+favicon
+	+injectExtrasHead
+	+inlineChunk("main", "css")(media="(min-width:200px)")
+
+block defaultBody
+	+injectExtrasBody
+	+inlineChunk(["head", "main"])(type="text/javascript")

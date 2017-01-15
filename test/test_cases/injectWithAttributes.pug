@@ -1,0 +1,16 @@
+extends ../../layout.pug
+
+
+block defaultHead
+	+mobile
+	+title
+	+favicon
+	+injectExtrasHead
+	+injectCSS(media="(min-width:200px)")
+
+block defaultBody
+	+injectExtrasBody
+	+injectJS(async=true)
+	//- or
+	//- +injectJS()(async)
+	//- otherwise async will be passed as an argument, not an attribute

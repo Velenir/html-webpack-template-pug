@@ -1,0 +1,13 @@
+extends ../../layout.pug
+
+
+block defaultHead
+	+mobile
+	+title
+	+favicon
+	+injectExtrasHead
+	+inlineCSS(media="(min-width:200px)")
+
+block defaultBody
+	+injectExtrasBody
+	+inlineJS(type="text/javascript")
