@@ -340,19 +340,27 @@ mixin inlineChunk(chunkNames, type)
 		
 		if type === "css"
 			each file in chunk.css
-				style!= getFileContents(file)
+				if injected.has(file) || inlined.has(file)
+					- continue;
+				style&attributes(attributes)!= getFileContents(file)
 				- inlined.add(file);
 			else
 				- console.warn("No css files in %s chunk", chunkName);
 		else if type === "js"
-			script!= getFileContents(chunk.entry)
+			if injected.has(chunk.entry) || inlined.has(chunk.entry)
+				- continue;
+			script&attributes(attributes)!= getFileContents(chunk.entry)
 			- inlined.add(chunk.entry);
 		else
 			each file in chunk.css
-				style!= getFileContents(file)
+				if injected.has(file) || inlined.has(file)
+					- continue;
+				style&attributes(attributes)!= getFileContents(file)
 				- inlined.add(file);
 				
-			script!= getFileContents(chunk.entry)
+			if injected.has(chunk.entry) || inlined.has(chunk.entry)
+				- continue;
+			script&attributes(attributes)!= getFileContents(chunk.entry)
 			- inlined.add(chunk.entry);
 	
 
@@ -373,19 +381,27 @@ mixin injectChunk(chunkNames, type)
 		
 		if type === "css"
 			each file in chunk.css
-				link(rel="stylesheet", href=file)
+				if injected.has(file) || inlined.has(file)
+					- continue;
+				link(rel="stylesheet", href=file)&attributes(attributes)
 				- injected.add(file);
 			else
 				- console.warn("No css files in %s chunk", chunkName);
 		else if type === "js"
-			script(src=chunk.entry)
+			if injected.has(chunk.entry) || inlined.has(chunk.entry)
+				- continue;
+			script(src=chunk.entry)&attributes(attributes)
 			- injected.add(chunk.entry);
 		else
 			each file in chunk.css
-				link(rel="stylesheet", href=file)
+				if injected.has(file) || inlined.has(file)
+					- continue;
+				link(rel="stylesheet", href=file)&attributes(attributes)
 				- injected.add(file);
 				
-			script(src=chunk.entry)
+			if injected.has(chunk.entry) || inlined.has(chunk.entry)
+				- continue;
+			script(src=chunk.entry)&attributes(attributes)
 			- injected.add(chunk.entry);
 
 		
