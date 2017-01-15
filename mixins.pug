@@ -109,6 +109,13 @@ else
 		if (excludeJSWithCSS && chunk.css.length > 0) || (excludeJSChunks && excludeJSChunks.has(name))
 			- continue;
 		- jsToInject.add(chunk.entry);
+		
+//- 
+	returns contents of a compiled file
+	@filename -- name of the wanted file
+- function getFileContents(filename) {
+	- return compilation.assets[filename.substr(substrStart)].source();
+- }
 
 
 //- 
@@ -136,7 +143,7 @@ mixin inline(filename, tag, searchWithin)
 	each file in files
 		- var currentTag = tag || (file.endsWith(".css") ? "style" : file.endsWith(".js") ? "script" : "div");
 
-		#{currentTag}&attributes(attributes)!= compilation.assets[file.substr(substrStart)].source()
+		#{currentTag}&attributes(attributes)!= getFileContents(file)
 
 		- inlined.add(file);
 	else
@@ -333,19 +340,19 @@ mixin inlineChunk(chunkNames, type)
 		
 		if type === "css"
 			each file in chunk.css
-				style!= compilation.assets[file.substr(substrStart)].source()
+				style!= getFileContents(file)
 				- inlined.add(file);
 			else
 				- console.warn("No css files in %s chunk", chunkName);
 		else if type === "js"
-			script!= compilation.assets[chunk.entry.substr(substrStart)].source()
+			script!= getFileContents(chunk.entry)
 			- inlined.add(chunk.entry);
 		else
 			each file in chunk.css
-				style!= compilation.assets[file.substr(substrStart)].source()
+				style!= getFileContents(file)
 				- inlined.add(file);
 				
-			script!= compilation.assets[chunk.entry.substr(substrStart)].source()
+			script!= getFileContents(chunk.entry)
 			- inlined.add(chunk.entry);
 	
 
