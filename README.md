@@ -368,7 +368,7 @@ Available mixins are:
 
 
 
-`inline*` and `inject*` mixins keep track of inlined and injected files, so no one file will appear twice. This allows for:
+`inline*`, `inject*`, `CSS` and `JS` mixins keep track of inlined and injected files, so no one file will appear twice. This allows for:
 
 ```pug
 +inlineCSS("style.css")
@@ -377,7 +377,7 @@ Available mixins are:
 //- ...
 
 //- the rest
-+inlineCSS
++CSS
 ```
 
 However, `inline` and `inject` mixins allow duplicates.
