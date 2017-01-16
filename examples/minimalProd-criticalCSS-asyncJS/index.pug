@@ -1,0 +1,34 @@
+//- include/extends ~%PATH% resolves to node_modules/%PATH%
+include ~html-webpack-template-pug/mixins.pug
+
+doctype html
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		meta(http-equiv='X-UA-Compatible', content='IE=edge')
+		
+		+mobile
+		+title
+		+favicon
+		
+		//- inlines css from chunks passed in options.inline (critical_css.css)
+		+inlineCSS
+		
+		//- asynchronously injects the rest
+		+injectCSS(rel="preload", as="style", onload="this.rel='stylesheet'")
+		
+		//- asyncronously injects js
+		+injectJS(async=true)
+
+	body
+
+		+appMount
+		
+		h3 htmlWebpackPlugin:
+		
+		pre= JSON.stringify(htmlWebpackPlugin, null, 2)
+		hr
+
+		h3 webpackConfig:
+
+		pre= JSON.stringify(webpackConfig, null, 2)
