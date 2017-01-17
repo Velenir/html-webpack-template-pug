@@ -19,6 +19,10 @@ html(lang='en')
 		
 		//- asyncronously injects js
 		+injectJS(async=true)
+		//- or
+		//- +injectJS()(async)
+		//- can't use +injectJS(async) or async will be passed as an argument, not an attribute
+
 
 	body
 
