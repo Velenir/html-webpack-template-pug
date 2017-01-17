@@ -60,7 +60,7 @@ Optional parameters:
 - `excludeJSChunks: String or [String,...]` -- A chunk name or an array of chunk names. Excludes JavaScript files from specific chunks. Intended for use cases when a JavaScript file (e.g `style.js`) is created as a byproduct of a CSS-only entry chunk (`entry: {style: 'main.css'}`).
 - `injectExtras.head: [tag,...]` -- An array of Objects representing **tags** to be injected in `<head>`. A tag can be:
   + A String ending with **".css"**. Then the injected **tag** becomes `<link rel="stylesheet" href=tag>`.
-  + A String ending with **".css"**. Then the injected **tag** becomes `<script src=tag></script>`.
+  + A String ending with **".js"**. Then the injected **tag** becomes `<script src=tag></script>`.
   + An object with one required property **tag** that will serve as the tag name. All other properties will be set on the injected **tag** as its attributes. **innerHTML** property, if set, will be passed as content to non-self-closing **tags**.
   + To give an example:
 	
@@ -312,32 +312,32 @@ Available mixins are:
 
 	Inlines css resources from `htmlWebpackPlugin.files`, except for already inlined or injected resources;  
 	`@cssList` can be a single filename string, RegExp or an array of them,  
-	cssList strings starting with **"!"** are skipped;  
-	by default cssList -- all css files that are supposed to be inlined according to `htmlWebpackPlugin.options`;
+	`cssList` strings starting with **"!"** are skipped;  
+	by default `cssList` -- all css files that are supposed to be inlined according to `htmlWebpackPlugin.options`;
   also accepts attributes to be added to style tags, `+inlineCSS(...)(attributes)`.
 
 - `injectCSS(cssList)`
 
 	Injects css resources from `htmlWebpackPlugin.files`, except for already inlined or injected resources;  
 	`@cssList` can be a single filename string, RegExp or an array of them,  
-	cssList strings starting with **"!"** are skipped;  
-	by default cssList -- all css files that are supposed to be injected according to `htmlWebpackPlugin.options`;
+	`cssList` strings starting with **"!"** are skipped;  
+	by default `cssList` -- all css files that are supposed to be injected according to `htmlWebpackPlugin.options`;
   also accepts attributes to be added to link tags, `+injectCSS(...)(attributes)`.
 
 - `inlineJS(jsList)`
 
 	Inlines js resources from `htmlWebpackPlugin.files`, except for already inlined or injected resources;  
 	`@jsList` can be a single filename string, RegExp or an array of them,  
-	jsList strings starting with **"!"** are skipped;  
-	by default jsList -- all js files that are supposed to be inlined according to `htmlWebpackPlugin.options`;
+	`jsList` strings starting with **"!"** are skipped;  
+	by default `jsList` -- all js files that are supposed to be inlined according to `htmlWebpackPlugin.options`;
   also accepts attributes to be added to script tags, `+inlineJS(...)(attributes)`.
 
 - `injectJS(jsList)`
 
 	Injects js resources from `htmlWebpackPlugin.files`, except for already inlined or injected resources;  
 	`@jsList` can be a single filename string, RegExp or an array of them,  
-	jsList strings starting with **"!"** are skipped;  
-  by default jsList -- all js files that are supposed to be injected according to `htmlWebpackPlugin.options`;
+	`jsList` strings starting with **"!"** are skipped;  
+  by default `jsList` -- all js files that are supposed to be injected according to `htmlWebpackPlugin.options`;
   also accepts attributes to be added to script tags, `+injectJS(...)(attributes)`.
 
 - `inlineChunk(chunkNames, type)`
