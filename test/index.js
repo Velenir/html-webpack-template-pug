@@ -90,24 +90,24 @@ var attachCompiledAssets = (function () {
 			substrStart = publicPath ? publicPath.length : 0;
 
 		var compiledAssetsPromises = locals.htmlWebpackPlugin.files.css
-		.concat(locals.htmlWebpackPlugin.files.js)
-		.reduce(function(promises, fname) {
-			if(cachedAssets.has(fname)) {
-				assets[fname] = cachedAssets.get(fname);
-			} else {
-				if(substrStart) fname = fname.substr(substrStart);
-				var promise = promiseFS(fs.readFile, path.join(assetsDir, fname), "utf8").then(function(data) {
-					cachedAssets.set(fname, assets[fname] = {
-						source: function() {
-							return data;
-						}
+			.concat(locals.htmlWebpackPlugin.files.js)
+			.reduce(function(promises, fname) {
+				if(cachedAssets.has(fname)) {
+					assets[fname] = cachedAssets.get(fname);
+				} else {
+					if(substrStart) fname = fname.substr(substrStart);
+					var promise = promiseFS(fs.readFile, path.join(assetsDir, fname), "utf8").then(function(data) {
+						cachedAssets.set(fname, assets[fname] = {
+							source: function() {
+								return data;
+							}
+						});
 					});
-				});
-				promises.push(promise);
-			}
+					promises.push(promise);
+				}
 
-			return promises;
-		}, []);
+				return promises;
+			}, []);
 
 		return Promise.all(compiledAssetsPromises).then(function() {
 			locals.compilation = {assets: assets};
