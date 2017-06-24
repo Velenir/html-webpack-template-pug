@@ -34,7 +34,7 @@
     "chai": "*",
     "commitizen": "^2.8.6",
     "cz-conventional-changelog": "^2.0.0",
-    "eslint": "^3.9.1",
+    "eslint": "^4.1.0",
     "eslint-plugin-import": "^2.5.0",
     "js-beautify": "^1.6.4",
     "mocha": "*",
