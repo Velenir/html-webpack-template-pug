@@ -36,7 +36,7 @@
     "cz-conventional-changelog": "^2.0.0",
     "eslint": "^4.1.0",
     "eslint-plugin-import": "^2.6.0",
-    "js-beautify": "^1.6.4",
+    "js-beautify": "^1.7.3",
     "mocha": "*",
     "pug": "^2.0.0-rc.2",
     "semantic-release": "^8.0.0"
