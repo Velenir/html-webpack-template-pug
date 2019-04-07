@@ -37,7 +37,7 @@
     "eslint": "^4.1.0",
     "eslint-plugin-import": "^2.6.0",
     "js-beautify": "1.7.5",
-    "mocha": "*",
+    "mocha": ">=6.1.1",
     "pug": "^2.0.0-rc.2",
     "semantic-release": "15.9.6"
   },
